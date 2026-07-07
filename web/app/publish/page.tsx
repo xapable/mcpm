@@ -3,11 +3,13 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Package, Github } from "lucide-react";
 
 export default function PublishPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   if (!session) {
     return (
@@ -20,6 +22,7 @@ export default function PublishPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     const form = new FormData(e.currentTarget);
 
     const res = await fetch("/api/packages", {
@@ -28,78 +31,74 @@ export default function PublishPage() {
       body: JSON.stringify({
         name: form.get("name"),
         description: form.get("description"),
-        version: form.get("version") || "1.0.0",
+        version: "1.0.0",
         repoUrl: form.get("repoUrl"),
-        readme: form.get("readme"),
+        readme: `# ${form.get("name")}\n\n${form.get("description") || "An MCP tool."}`,
       }),
     });
 
     if (res.ok) {
       router.push(`/package/${form.get("name")}`);
+    } else {
+      const data = await res.json();
+      setError(data.error || "Failed to publish");
     }
     setLoading(false);
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-slate-900">Publish a tool</h1>
-      <p className="mt-2 text-slate-500">
-        Share your MCP server with the world. Agents everywhere will thank you.
-      </p>
+    <div className="mx-auto max-w-lg px-4 py-16">
+      <div className="text-center mb-10">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+          <Package className="h-6 w-6" />
+        </div>
+        <h1 className="text-3xl font-bold text-slate-900">Publish a tool</h1>
+        <p className="mt-2 text-slate-500">
+          Share your MCP server. One command, live on mcpm.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-slate-700">Package name</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Package name</label>
           <input
             name="name"
             required
             placeholder="my-awesome-mcp"
-            className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700">Description</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
           <input
             name="description"
             placeholder="What does your tool do?"
-            className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Version</label>
-            <input
-              name="version"
-              defaultValue="1.0.0"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Repository URL</label>
-            <input
-              name="repoUrl"
-              placeholder="https://github.com/..."
-              className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            />
-          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700">README</label>
-          <textarea
-            name="readme"
-            rows={10}
-            placeholder="# My MCP Tool&#10;&#10;Describe how to use it..."
-            className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3 font-mono text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            <span className="inline-flex items-center gap-1.5">
+              <Github className="h-3.5 w-3.5" /> Repository URL
+            </span>
+          </label>
+          <input
+            name="repoUrl"
+            placeholder="https://github.com/you/repo"
+            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
+
+        {error && (
+          <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-slate-900 py-3 font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+          className="w-full rounded-lg bg-slate-900 py-2.5 font-medium text-white hover:bg-slate-800 disabled:opacity-50 transition-colors"
         >
           {loading ? "Publishing..." : "Publish"}
         </button>
