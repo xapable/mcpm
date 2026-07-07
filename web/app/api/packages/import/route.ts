@@ -49,6 +49,18 @@ export async function POST(req: NextRequest) {
   const description = pkg.description || "";
   const version = pkg.version || "1.0.0";
 
+  // Fetch README from GitHub (try multiple paths)
+  let readme = "";
+  const readmePaths = ["README.md", "readme.md", "README", "docs/README.md"];
+  for (const rp of readmePaths) {
+    try {
+      const res = await fetch(
+        `https://raw.githubusercontent.com/${owner}/${cleanRepo}/main/${rp}`
+      );
+      if (res.ok) { readme = await res.text(); break; }
+    } catch { /* try next */ }
+  }
+
   // Check if package already exists
   const existing = await db.select().from(packages).where(eq(packages.name, name)).limit(1);
 
@@ -58,11 +70,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Package name taken by another user" }, { status: 403 });
     }
     await db.update(packages).set({ description, repoUrl }).where(eq(packages.name, name));
-    await db.insert(versions).values({ packageId: existing[0].id, version, readme: "" });
+    await db.insert(versions).values({ packageId: existing[0].id, version, readme });
   } else {
     // New package
     const [newPkg] = await db.insert(packages).values({ name, description, userId, repoUrl }).returning();
-    await db.insert(versions).values({ packageId: newPkg.id, version, readme: "" });
+    await db.insert(versions).values({ packageId: newPkg.id, version, readme });
   }
 
   return NextResponse.json({ ok: true, name, url: `https://www.mcpm.dev/package/${name}` });
