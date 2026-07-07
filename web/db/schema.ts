@@ -60,16 +60,16 @@ export const stars = pgTable("star", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-// Blog & Tutorial posts
+// Blog posts — anyone with GitHub can publish
 export const posts = pgTable("post", {
   id: serial("id").primaryKey(),
-  slug: text("slug").notNull().unique(),
-  type: text("type").notNull(), // "blog" or "tutorial"
+  slug: text("slug").unique().notNull(),
+  type: text("type").notNull().default("blog"), // "blog" or "tutorial"
   title: text("title").notNull(),
   description: text("description").default(""),
   content: text("content").default(""),
-  author: text("author").default("mcpm"),
   tags: text("tags").array().default([]),
+  userId: text("userId").references(() => users.id).notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt").defaultNow(),
 }, (table) => ({

@@ -50,10 +50,9 @@ export async function POST(request: NextRequest) {
   const postSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
   try {
-    const post = await createPost(type, postSlug, {
+    const post = await createPost(type, postSlug, (user as any).id, {
       title,
       description: description || "",
-      author: user.username,
       tags: tags || [],
       content: content || "",
     });

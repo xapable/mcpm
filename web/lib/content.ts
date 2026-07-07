@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { posts } from "@/db/schema";
+import { posts, users } from "@/db/schema";
 import { eq, ilike, or, sql, desc } from "drizzle-orm";
 import { marked } from "marked";
 
@@ -22,21 +22,26 @@ function formatDate(d: Date | null): string {
   return d ? d.toISOString().split("T")[0] : new Date().toISOString().split("T")[0];
 }
 
-function rowToMeta(row: typeof posts.$inferSelect): PostMeta {
+async function getAuthorName(userId: string): Promise<string> {
+  const user = await db.select({ username: users.username }).from(users).where(eq(users.id, userId)).limit(1);
+  return user[0]?.username || "anonymous";
+}
+
+async function rowToMeta(row: typeof posts.$inferSelect): Promise<PostMeta> {
   return {
     slug: row.slug,
     title: row.title,
     description: row.description || "",
     date: formatDate(row.createdAt),
-    author: row.author || "mcpm",
+    author: await getAuthorName(row.userId),
     tags: row.tags || [],
     type: row.type as "blog" | "tutorial",
   };
 }
 
-function rowToPost(row: typeof posts.$inferSelect): Post {
+async function rowToPost(row: typeof posts.$inferSelect): Promise<Post> {
   return {
-    ...rowToMeta(row),
+    ...(await rowToMeta(row)),
     content: row.content || "",
     html: marked.parse(row.content || "", { async: false }) as string,
   };
@@ -49,13 +54,13 @@ export async function getAllPosts(type: "blog" | "tutorial"): Promise<PostMeta[]
     .from(posts)
     .where(eq(posts.type, type))
     .orderBy(desc(posts.createdAt));
-  return rows.map(rowToMeta);
+  return Promise.all(rows.map(rowToMeta));
 }
 
 /** Get all posts (blog + tutorials) combined, sorted by date */
 export async function getAllContent(): Promise<PostMeta[]> {
   const rows = await db.select().from(posts).orderBy(desc(posts.createdAt));
-  return rows.map(rowToMeta);
+  return Promise.all(rows.map(rowToMeta));
 }
 
 /** Get a single post by slug and type */
@@ -82,14 +87,15 @@ export async function searchPosts(query: string): Promise<PostMeta[]> {
       )
     )
     .orderBy(desc(posts.createdAt));
-  return rows.map(rowToMeta);
+  return Promise.all(rows.map(rowToMeta));
 }
 
 /** Create a new post in the database */
 export async function createPost(
   type: "blog" | "tutorial",
   slug: string,
-  meta: { title: string; description: string; author?: string; tags?: string[]; content?: string }
+  userId: string,
+  meta: { title: string; description: string; tags?: string[]; content?: string }
 ): Promise<PostMeta> {
   const [row] = await db
     .insert(posts)
@@ -99,8 +105,8 @@ export async function createPost(
       title: meta.title,
       description: meta.description || "",
       content: meta.content || `# ${meta.title}\n\nWrite your content here...`,
-      author: meta.author || "mcpm",
       tags: meta.tags || [],
+      userId,
     })
     .returning();
   return rowToMeta(row);
