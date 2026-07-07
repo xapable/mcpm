@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     }
     // Update package metadata
     await db.update(packages)
-      .set({ description: description || existing[0].description, mcp: mcp || existing[0].mcp, repoUrl: repoUrl || existing[0].repoUrl })
+      .set({ description: description || existing[0].description, mcp: mcp ?? existing[0].mcp, repoUrl: repoUrl || existing[0].repoUrl })
       .where(eq(packages.name, name));
     // Add new version to existing package
     await db.insert(versions).values({

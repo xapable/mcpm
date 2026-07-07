@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { packages, users, versions } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export async function GET(
   _req: NextRequest,
@@ -15,7 +15,7 @@ export async function GET(
       description: packages.description,
       repoUrl: packages.repoUrl,
       downloads: packages.downloads,
-      mcp: packages.mcp,
+      mcp: sql<string>`${packages.mcp}`,
       createdAt: packages.createdAt,
       username: users.username,
       version: versions.version,
