@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getUserPackages } from "@/lib/data";
-import { PackageCard } from "@/components/PackageCard";
 import Link from "next/link";
+import { DashboardPackageCard } from "./DashboardPackageCard";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -23,13 +23,13 @@ export default async function DashboardPage() {
       <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
       <p className="mt-2 text-slate-500">Manage your published tools.</p>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {myPackages.map((pkg) => (
-          <PackageCard key={pkg.name} {...pkg} />
-        ))}
-      </div>
-
-      {myPackages.length === 0 && (
+      {myPackages.length > 0 ? (
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {myPackages.map((pkg) => (
+            <DashboardPackageCard key={pkg.name} {...pkg} />
+          ))}
+        </div>
+      ) : (
         <p className="mt-8 text-center text-slate-400">
           No packages yet.{" "}
           <Link href="/publish" className="text-blue-600 hover:underline">
