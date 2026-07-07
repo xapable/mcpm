@@ -122,6 +122,7 @@ export function PostContent({ html }: { html: string }) {
           prose-img:rounded-xl prose-img:shadow-md
           prose-hr:border-slate-200
           [&_pre_code]:!bg-transparent [&_pre_code]:!p-0 [&_pre_code]:text-sm [&_pre_code]:leading-relaxed [&_pre_code]:text-[#e6edf3]
+          [&_pre_code:not([class*='hljs'])]:!text-[#e6edf3] [&_pre_code:not([class*='hljs'])]:!bg-transparent
           [&_.hljs-keyword]:!text-[#ff7b72] [&_.hljs-string]:!text-[#a5d6ff] [&_.hljs-comment]:!text-[#8b949e] [&_.hljs-function]:!text-[#d2a8ff]
         "
         dangerouslySetInnerHTML={{ __html: html }}

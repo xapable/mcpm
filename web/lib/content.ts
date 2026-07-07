@@ -13,7 +13,8 @@ marked.use(
       if (lang && hljs.getLanguage(lang)) {
         return hljs.highlight(code, { language: lang }).value;
       }
-      return code;
+      // No language = plain text, escape HTML
+      return code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     },
   })
 );
