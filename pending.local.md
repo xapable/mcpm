@@ -8,7 +8,7 @@ Items that cannot be completed in development. Requires real infrastructure.
 
 ### 1. Domain & DNS
 - [y] Buy `mcpm.dev` (Namecheap / Cloudflare Registrar)
-- [ ] Point DNS to Vercel
+- [y] Point DNS to Vercel
 
 ### 2. Database
 - [ ] Create Neon PostgreSQL database
