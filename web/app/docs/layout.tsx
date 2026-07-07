@@ -9,7 +9,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
     <div className="mx-auto max-w-7xl px-4 py-12">
       <div className="flex gap-10">
         {/* Sidebar */}
-        <aside className="hidden lg:block w-56 shrink-0">
+        <aside className="w-44 lg:w-56 shrink-0">
           <div className="sticky top-24">
             <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Documentation</h4>
             <nav className="space-y-0.5">

@@ -49,7 +49,7 @@ export function PostContent({ html }: { html: string }) {
       if (pre.closest(".code-block-wrapper")) return;
 
       const wrapper = document.createElement("div");
-      wrapper.className = "code-block-wrapper relative group/code -mx-4 sm:mx-0 my-6";
+      wrapper.className = "code-block-wrapper relative group/code mt-3 rounded-lg border border-slate-700 bg-[#0d1117] overflow-hidden";
 
       // Language label
       const code = pre.querySelector("code");
