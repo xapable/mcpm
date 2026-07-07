@@ -6,3 +6,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Code blocks ── */
+pre {
+  @apply mt-3 rounded-lg border border-slate-200 bg-slate-900 p-4 font-mono text-sm text-slate-300 overflow-hidden;
+}
+
+pre code {
+  @apply bg-transparent p-0 text-inherit text-sm;
+}
+
+/* Inline code */
+:not(pre) > code {
+  @apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-slate-800;
+}

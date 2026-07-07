@@ -23,16 +23,15 @@ function SearchResults() {
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    if (!q.trim()) {
-      setResults([]);
-      setSearched(false);
-      return;
-    }
-
+    // Fetch on mount (all tools) and whenever query changes
     setLoading(true);
     setSearched(true);
 
-    fetch(`/api/search?q=${encodeURIComponent(q.trim())}&limit=20`)
+    const url = q.trim()
+      ? `/api/search?q=${encodeURIComponent(q.trim())}&limit=20`
+      : `/api/search?limit=20`;
+
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setResults(data);
@@ -49,19 +48,19 @@ function SearchResults() {
       {/* Search header */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-slate-900">
-          {searched && q ? (
+          {q ? (
             <>
               Results for{" "}
               <span className="text-blue-600">&ldquo;{q}&rdquo;</span>
             </>
           ) : (
-            "Search MCP tools"
+            "All MCP tools"
           )}
         </h1>
         <p className="mt-2 text-slate-500">
-          {searched && q
+          {q
             ? `${results.length} package${results.length !== 1 ? "s" : ""} found`
-            : "Enter a query to find tools for your agents."}
+            : `${results.length} tools in the registry`}
         </p>
       </div>
 
@@ -78,31 +77,30 @@ function SearchResults() {
       )}
 
       {/* Empty state */}
-      {!loading && searched && results.length === 0 && q && (
+      {!loading && results.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Search className="h-12 w-12 text-slate-300" />
           <h2 className="mt-4 text-xl font-semibold text-slate-700">
-            No packages found
+            {q ? "No packages found" : "No tools yet"}
           </h2>
           <p className="mt-2 text-slate-500 max-w-md">
-            No MCP tools match &ldquo;{q}&rdquo;. Try a different search term or{" "}
-            <a href="/publish" className="text-blue-600 hover:underline">
-              publish your own
-            </a>
-            .
-          </p>
-        </div>
-      )}
-
-      {/* Initial state — no query entered */}
-      {!searched && !q && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Search className="h-12 w-12 text-slate-300" />
-          <h2 className="mt-4 text-xl font-semibold text-slate-700">
-            Start searching
-          </h2>
-          <p className="mt-2 text-slate-500 max-w-md">
-            Type a tool name or capability above to search the registry.
+            {q ? (
+              <>
+                No MCP tools match &ldquo;{q}&rdquo;. Try a different search term or{" "}
+                <a href="/publish" className="text-blue-600 hover:underline">
+                  publish your own
+                </a>
+                .
+              </>
+            ) : (
+              <>
+                The registry is empty. Be the first to{" "}
+                <a href="/publish" className="text-blue-600 hover:underline">
+                  publish a tool
+                </a>
+                !
+              </>
+            )}
           </p>
         </div>
       )}

@@ -62,9 +62,7 @@ export default function PublishPage() {
               </span>
               <h2 className="font-semibold text-slate-900">{item.title}</h2>
             </div>
-            <div className="ml-10 rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-300 whitespace-pre-wrap">
-              {item.code}
-            </div>
+            <pre className="ml-10">{item.code}</pre>
             {item.hint && (
               <p className="ml-10 mt-2 text-sm text-slate-500">{item.hint}</p>
             )}

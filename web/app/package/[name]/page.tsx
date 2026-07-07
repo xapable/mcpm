@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { Download, User, Clock } from "lucide-react";
+import { Download, User, Clock, Github } from "lucide-react";
 import { formatNumber, timeAgo } from "@/lib/utils";
 import { getPackageData } from "@/lib/data";
 import { StarButton } from "@/components/StarButton";
 import { SetupButtons } from "./SetupButtons";
 import { InstallButtons } from "@/components/InstallButtons";
+import { QuickInstall } from "@/components/QuickInstall";
 
 interface PackagePageProps {
   params: { name: string };
@@ -100,6 +101,9 @@ export default async function PackagePage({ params }: PackagePageProps) {
         </div>
         <StarButton packageName={pkg.name} />
       </div>
+
+      {/* Quick install: CLI + GitHub */}
+      <QuickInstall name={pkg.name} repoUrl={pkg.repoUrl} />
 
       {/* One-click install buttons */}
       <div className="mt-6">

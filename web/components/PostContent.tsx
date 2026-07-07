@@ -35,7 +35,7 @@ export function PostContent({ html }: { html: string }) {
 
   useEffect(() => { setToc(tocItems); }, [tocItems]);
 
-  // Add IDs to headings and copy buttons to code blocks
+  // Add IDs to headings and language labels to code blocks
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -43,41 +43,23 @@ export function PostContent({ html }: { html: string }) {
     const headings = containerRef.current.querySelectorAll("h2, h3");
     headings.forEach((h, i) => { h.id = `heading-${i}`; });
 
-    // Add copy buttons to pre blocks
+    // Add language labels to pre blocks
     const pres = containerRef.current.querySelectorAll("pre");
     pres.forEach((pre) => {
-      if (pre.closest(".code-block-wrapper")) return;
+      if (pre.querySelector(".lang-label")) return;
 
-      const wrapper = document.createElement("div");
-      wrapper.className = "code-block-wrapper relative group/code mt-3 rounded-lg border border-slate-200 bg-slate-900 overflow-hidden";
-
-      // Language label
       const code = pre.querySelector("code");
       const langClass = code?.className.match(/language-(\w+)/)?.[1] || code?.className.match(/lang-(\w+)/)?.[1];
       if (langClass) {
         const label = document.createElement("span");
-        label.className = "absolute top-3 left-4 text-xs font-mono text-slate-500 uppercase tracking-wider";
+        label.className = "lang-label absolute top-3 left-4 text-xs font-mono text-slate-500 uppercase tracking-wider";
         label.textContent = langClass;
-        wrapper.appendChild(label);
+        // pre needs position:relative for absolute positioning to work
+        if (getComputedStyle(pre).position === "static") {
+          pre.style.position = "relative";
+        }
+        pre.appendChild(label);
       }
-
-      pre.parentNode?.insertBefore(wrapper, pre);
-      wrapper.appendChild(pre);
-
-      // Copy button
-      const btn = document.createElement("button");
-      btn.className = "copy-btn absolute top-2 right-2 flex items-center gap-1.5 rounded-lg bg-slate-700/80 px-2.5 py-1.5 text-xs text-slate-300 opacity-0 group-hover/code:opacity-100 hover:bg-slate-600 transition-all";
-      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copy</span>`;
-
-      btn.onclick = async () => {
-        const codeText = code?.textContent || pre.textContent || "";
-        await navigator.clipboard.writeText(codeText);
-        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="text-green-400">Copied!</span>`;
-        setTimeout(() => {
-          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copy</span>`;
-        }, 2000);
-      };
-      wrapper.appendChild(btn);
     });
   }, [html]);
 
