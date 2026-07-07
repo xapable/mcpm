@@ -92,7 +92,7 @@ export default async function HomePage() {
             </Link>
 
             {/* Docs */}
-            <Link href="/tutorials" className="group rounded-2xl border border-slate-200 bg-gradient-to-br from-green-50 to-white p-6 hover:border-green-300 hover:shadow-md transition-all">
+            <Link href="/docs" className="group rounded-2xl border border-slate-200 bg-gradient-to-br from-green-50 to-white p-6 hover:border-green-300 hover:shadow-md transition-all">
               <div className="flex items-center gap-3 mb-3">
                 <div className="rounded-lg bg-green-100 p-2 text-green-600">
                   <Code2 className="h-5 w-5" />

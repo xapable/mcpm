@@ -66,7 +66,7 @@ export default function PublishPage() {
       <div className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
         <p className="text-sm text-slate-600">
           Need help?{" "}
-          <Link href="/tutorials" className="text-blue-600 hover:underline">Read the docs</Link>
+          <Link href="/docs" className="text-blue-600 hover:underline">Read the docs</Link>
           {" "}or{" "}
           <a href="https://github.com/xapable/mcpm/discussions" target="_blank" className="text-blue-600 hover:underline inline-flex items-center gap-1">
             ask on GitHub <Github className="h-3 w-3" />

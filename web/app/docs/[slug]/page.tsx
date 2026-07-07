@@ -25,7 +25,7 @@ export default async function TutorialPostPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <Link href="/tutorials" className="text-sm text-blue-600 hover:underline mb-8 inline-block">
+      <Link href="/docs" className="text-sm text-blue-600 hover:underline mb-8 inline-block">
         ← Back to Docs
       </Link>
       <article>
@@ -56,7 +56,7 @@ export default async function TutorialPostPage({ params }: Props) {
         </div>
       </article>
       <div className="mt-16 pt-8 border-t border-slate-200">
-        <Link href="/tutorials" className="text-sm text-blue-600 hover:underline">
+        <Link href="/docs" className="text-sm text-blue-600 hover:underline">
           ← Back to all docs
         </Link>
       </div>

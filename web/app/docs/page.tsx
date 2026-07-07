@@ -35,7 +35,7 @@ export default async function TutorialsPage({ searchParams }: { searchParams: { 
                   <span>·</span>
                   <span>{post.author}</span>
                 </div>
-                <Link href={`/tutorials/${post.slug}`} className="group">
+                <Link href={`/docs/${post.slug}`} className="group">
                   <h2 className="text-2xl font-semibold group-hover:text-green-600 transition-colors mb-2">
                     {post.title}
                   </h2>
@@ -58,7 +58,7 @@ export default async function TutorialsPage({ searchParams }: { searchParams: { 
             <div className="mt-12 flex items-center justify-center gap-4">
               {page > 1 ? (
                 <Link
-                  href={`/tutorials${page === 2 ? "" : `?page=${page - 1}`}`}
+                  href={`/docs${page === 2 ? "" : `?page=${page - 1}`}`}
                   className="flex items-center gap-1 rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
                 >
                   <ChevronLeft className="h-4 w-4" /> Previous
@@ -73,7 +73,7 @@ export default async function TutorialsPage({ searchParams }: { searchParams: { 
               </span>
               {page < totalPages ? (
                 <Link
-                  href={`/tutorials?page=${page + 1}`}
+                  href={`/docs?page=${page + 1}`}
                   className="flex items-center gap-1 rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
                 >
                   Next <ChevronRight className="h-4 w-4" />
