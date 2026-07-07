@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { packages as pkgTable, users } from "@/db/schema";
+import { packages as pkgTable, versions, users } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export async function getHomeData() {
@@ -31,7 +31,7 @@ export async function getPackageData(name: string) {
   const pkg = await db.query.packages.findFirst({
     where: (p, { eq }) => eq(p.name, name),
     with: {
-      versions: { orderBy: (v, { desc }) => [desc(v.createdAt)] },
+      versions: { orderBy: (v: typeof versions.$inferSelect, { desc }) => [desc(v.createdAt)] },
     },
   });
 
