@@ -3,6 +3,8 @@ import { BookOpen, Code2, Terminal, Rocket, Puzzle, FileText } from "lucide-reac
 import { getAllPosts } from "@/lib/content";
 import { PostMeta } from "@/lib/content";
 
+export const dynamic = "force-dynamic";
+
 export default async function DocsLayout({ children }: { children: React.ReactNode }) {
   const docs = await getAllPosts("tutorial");
 
