@@ -71,6 +71,10 @@ export async function POST(req: NextRequest) {
     .limit(1);
 
   if (existing.length > 0) {
+    // Only the original publisher can add versions
+    if (existing[0].userId !== userId) {
+      return NextResponse.json({ error: "Only the package owner can publish new versions" }, { status: 403 });
+    }
     // Add new version to existing package
     await db.insert(versions).values({
       packageId: existing[0].id,
