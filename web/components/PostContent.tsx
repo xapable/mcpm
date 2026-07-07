@@ -49,7 +49,7 @@ export function PostContent({ html }: { html: string }) {
       if (pre.closest(".code-block-wrapper")) return;
 
       const wrapper = document.createElement("div");
-      wrapper.className = "code-block-wrapper relative group/code mt-3 rounded-lg border border-slate-700 bg-[#0d1117] overflow-hidden";
+      wrapper.className = "code-block-wrapper relative group/code mt-3 rounded-lg border border-slate-200 bg-slate-900 overflow-hidden";
 
       // Language label
       const code = pre.querySelector("code");
@@ -115,7 +115,7 @@ export function PostContent({ html }: { html: string }) {
           prose-p:text-slate-700 prose-p:leading-7 prose-p:my-4
           prose-a:text-blue-600 prose-a:font-medium hover:prose-a:underline
           prose-code:bg-amber-50 prose-code:text-amber-700 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-normal prose-code:before:content-none prose-code:after:content-none
-          prose-pre:!bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-pre:!rounded-xl prose-pre:!shadow-sm prose-pre:!p-4
+          prose-pre:!bg-transparent prose-pre:!border-0 prose-pre:!p-0 prose-pre:!m-0 prose-pre:!rounded-none
           prose-li:text-slate-700 prose-li:leading-7 prose-li:my-1
           prose-strong:text-slate-900 prose-strong:font-semibold
           prose-blockquote:border-l-blue-400 prose-blockquote:bg-slate-50 prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-slate-600 prose-blockquote:text-base
