@@ -1,12 +1,9 @@
 import Link from "next/link";
-import { BookOpen, Code2, Terminal, Rocket, Puzzle, FileText } from "lucide-react";
-import { getAllPosts } from "@/lib/content";
-import { PostMeta } from "@/lib/content";
+import { Rocket, FileText, Code2 } from "lucide-react";
+import { getAllDocs } from "@/lib/docs";
 
-export const dynamic = "force-dynamic";
-
-export default async function DocsLayout({ children }: { children: React.ReactNode }) {
-  const docs = await getAllPosts("tutorial");
+export default function DocsLayout({ children }: { children: React.ReactNode }) {
+  const docs = getAllDocs();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">

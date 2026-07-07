@@ -40,17 +40,11 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { type, title, description, tags, slug, content } = body;
 
-  if (!type || (type !== "blog" && type !== "tutorial")) {
-    return NextResponse.json({ error: "Invalid type. Must be 'blog' or 'tutorial'" }, { status: 400 });
+  if (!type || type !== "blog") {
+    return NextResponse.json({ error: "Only 'blog' type is supported. Docs are file-based." }, { status: 400 });
   }
   if (!title) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
-  }
-
-  // Only admin can create tutorials
-  const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "xapable";
-  if (type === "tutorial" && user.username !== ADMIN_USERNAME) {
-    return NextResponse.json({ error: "Forbidden — only admin can create tutorials" }, { status: 403 });
   }
 
   const postSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");

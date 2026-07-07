@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
-import { getAllPosts } from "@/lib/content";
+import { getAllDocs } from "@/lib/docs";
 import Link from "next/link";
 import { FileText } from "lucide-react";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Docs — mcpm",
   description: "Learn how to build, publish, and use MCP tools with mcpm.",
 };
 
-export default async function DocsPage() {
-  const docs = await getAllPosts("tutorial");
+export default function DocsPage() {
+  const docs = getAllDocs();
 
   return (
     <div>
