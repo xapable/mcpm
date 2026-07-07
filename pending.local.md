@@ -11,8 +11,8 @@ Items that cannot be completed in development. Requires real infrastructure.
 - [y] Point DNS to Vercel
 
 ### 2. Database
-- [ ] Create Neon PostgreSQL database
-- [ ] Copy connection string to `.env.local`
+- [y] Create Neon PostgreSQL database
+- [y] Copy connection string to `.env.local`
 - [ ] Run `npx drizzle-kit push`
 
 ### 3. GitHub OAuth App
