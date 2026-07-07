@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
   const name = pkg.name;
   const description = pkg.description || "";
   const version = pkg.version || "1.0.0";
+  const mcp = pkg.mcp || null;
 
   // Fetch README from GitHub (try multiple paths)
   let readme = "";
@@ -69,11 +70,11 @@ export async function POST(req: NextRequest) {
     if (existing[0].userId !== userId) {
       return NextResponse.json({ error: "Package name taken by another user" }, { status: 403 });
     }
-    await db.update(packages).set({ description, repoUrl }).where(eq(packages.name, name));
+    await db.update(packages).set({ description, repoUrl, mcp }).where(eq(packages.name, name));
     await db.insert(versions).values({ packageId: existing[0].id, version, readme });
   } else {
     // New package
-    const [newPkg] = await db.insert(packages).values({ name, description, userId, repoUrl }).returning();
+    const [newPkg] = await db.insert(packages).values({ name, description, userId, repoUrl, mcp }).returning();
     await db.insert(versions).values({ packageId: newPkg.id, version, readme });
   }
 
