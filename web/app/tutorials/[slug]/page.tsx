@@ -51,7 +51,9 @@ export default async function TutorialPostPage({ params }: Props) {
             <span>{post.author}</span>
           </div>
         </header>
-        <PostContent html={post.html} />
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm">
+          <PostContent html={post.html} />
+        </div>
       </article>
       <div className="mt-16 pt-8 border-t border-slate-200">
         <Link href="/tutorials" className="text-sm text-blue-600 hover:underline">

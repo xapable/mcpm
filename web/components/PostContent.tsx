@@ -118,7 +118,7 @@ export function PostContent({ html }: { html: string }) {
           prose-pre:!bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-pre:!rounded-xl prose-pre:!shadow-sm prose-pre:!p-4
           prose-li:text-slate-700 prose-li:leading-7 prose-li:my-1
           prose-strong:text-slate-900 prose-strong:font-semibold
-          prose-blockquote:border-l-blue-400 prose-blockquote:bg-blue-50 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-slate-700
+          prose-blockquote:border-l-blue-400 prose-blockquote:bg-slate-50 prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-slate-600 prose-blockquote:text-base
           prose-img:rounded-xl prose-img:shadow-md
           prose-hr:border-slate-200
           [&_pre_code]:!bg-transparent [&_pre_code]:!p-0 [&_pre_code]:text-sm [&_pre_code]:leading-relaxed [&_pre_code]:text-[#e6edf3]

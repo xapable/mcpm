@@ -53,8 +53,10 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        {/* Content with copy buttons */}
-        <PostContent html={post.html} />
+        {/* Content card */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm">
+          <PostContent html={post.html} />
+        </div>
       </article>
 
       {/* Back */}
