@@ -1,74 +1,13 @@
 import { notFound } from "next/navigation";
-import { Download, User, Clock, Github } from "lucide-react";
+import { Download, User, Clock, Github, ExternalLink } from "lucide-react";
 import { formatNumber, timeAgo } from "@/lib/utils";
 import { getPackageData } from "@/lib/data";
 import { StarButton } from "@/components/StarButton";
-import { SetupButtons } from "./SetupButtons";
-import { InstallButtons } from "@/components/InstallButtons";
 import { QuickInstall } from "@/components/QuickInstall";
 
 interface PackagePageProps {
   params: { name: string };
 }
-
-function getClientConfig(name: string, meta: any) {
-  const command = meta.command || "npx";
-  const args = meta.args || ["-y", name];
-  const hasEnv = meta.env && Object.keys(meta.env).length > 0;
-
-  // Universal stdio config — works on ALL MCP clients (Claude, ChatGPT, Cursor, Windsurf, etc.)
-  const stdio = { command, args, ...(hasEnv ? { env: meta.env } : {}) };
-  const stdioWithType = { type: "stdio", ...stdio };
-
-  return {
-    universal: {
-      mcpServers: { [name]: stdio },
-    },
-    universalTyped: {
-      mcpServers: { [name]: stdioWithType },
-    },
-    mcpmSh: `mcpm install ${name}`,
-    claudeCli: `claude mcp add --transport stdio ${name} -- ${command} ${args.join(" ")}`,
-    cursorCli: `cursor mcp add ${name} -- ${command} ${args.join(" ")}`,
-    codexCli: `codex mcp add ${name}`,
-  };
-}
-
-const CLIENTS = [
-  {
-    id: "universal",
-    name: "Universal",
-    icon: "🔌",
-    type: "json" as const,
-    description: "Works with all MCP clients",
-    paths: [
-      { client: "Claude Desktop", path: "~/Library/Application Support/Claude/claude_desktop_config.json" },
-      { client: "ChatGPT", path: "Settings → Integrations → MCP" },
-      { client: "Cursor", path: "~/.cursor/mcp.json" },
-      { client: "Windsurf", path: "~/.codeium/windsurf/mcp_config.json" },
-      { client: "VS Code / Copilot", path: ".vscode/mcp.json" },
-      { client: "Claude Code", path: ".mcp.json" },
-      { client: "Gemini CLI", path: "~/.gemini/mcp.json" },
-      { client: "Codex CLI", path: "~/.codex/mcp.json" },
-      { client: "Continue", path: "~/.continue/config.json" },
-      { client: "Cline / Roo Code", path: "Settings → MCP Servers" },
-    ],
-  },
-  {
-    id: "mcpmSh",
-    name: "mcpm.sh",
-    icon: "📦",
-    type: "cmd" as const,
-    description: "One command install",
-  },
-  {
-    id: "claudeCli",
-    name: "Claude Code CLI",
-    icon: "💻",
-    type: "cmd" as const,
-    description: "Terminal command",
-  },
-];
 
 export default async function PackagePage({ params }: PackagePageProps) {
   const pkg = await getPackageData(params.name);
@@ -76,8 +15,6 @@ export default async function PackagePage({ params }: PackagePageProps) {
   if (!pkg) {
     notFound();
   }
-
-  const configs = getClientConfig(pkg.name, pkg.mcp || {});
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -97,29 +34,25 @@ export default async function PackagePage({ params }: PackagePageProps) {
             <span className="flex items-center gap-1">
               <Clock className="h-4 w-4" /> {timeAgo(pkg.createdAt)}
             </span>
+            <StarButton packageName={pkg.name} />
           </div>
         </div>
-        <StarButton packageName={pkg.name} />
+        {pkg.repoUrl && (
+          <a
+            href={pkg.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+          >
+            <Github className="h-4 w-4" />
+            GitHub
+            <ExternalLink className="h-3 w-3 text-slate-400" />
+          </a>
+        )}
       </div>
 
-      {/* Quick install: CLI + GitHub */}
-      <QuickInstall name={pkg.name} repoUrl={pkg.repoUrl} />
-
-      {/* One-click install buttons */}
-      <div className="mt-6">
-        <InstallButtons
-          name={pkg.name}
-          command={(pkg.mcp as any)?.command || "npx"}
-          args={(pkg.mcp as any)?.args || ["-y", pkg.name]}
-        />
-      </div>
-
-      {/* One-click setup */}
-      <div className="mt-8 rounded-xl border-2 border-blue-200 bg-blue-50 p-6">
-        <h2 className="text-lg font-bold text-blue-900">⚡ Add to your MCP client</h2>
-        <p className="mt-1 text-sm text-blue-700">Click a client to copy the config, then paste it into your settings.</p>
-        <SetupButtons configs={configs} clients={CLIENTS} />
-      </div>
+      {/* CLI install */}
+      <QuickInstall name={pkg.name} />
 
       {/* README */}
       <div className="mt-10 rounded-xl border border-slate-200 p-8">

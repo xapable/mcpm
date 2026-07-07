@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Github, Loader2 } from "lucide-react";
+import { Github, Loader2, Copy, Check, Terminal, ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 interface Repo {
   name: string; fullName: string; description: string; url: string;
 }
 
 export function GitHubImport() {
-  const router = useRouter();
   const { data: session } = useSession();
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,6 +17,8 @@ export function GitHubImport() {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loadingRepos, setLoadingRepos] = useState(false);
   const [selectedRepo, setSelectedRepo] = useState("");
+  const [success, setSuccess] = useState<{ name: string } | null>(null);
+  const [cliCopied, setCliCopied] = useState(false);
 
   useEffect(() => {
     if (!session) return;
@@ -35,9 +36,61 @@ export function GitHubImport() {
       body: JSON.stringify({ repoUrl }),
     });
     const data = await res.json();
-    if (res.ok) router.push(`/package/${data.name}`);
-    else setError(data.error || "Import failed");
+    if (res.ok) {
+      setSuccess({ name: data.name });
+    } else {
+      setError(data.error || "Import failed");
+    }
     setLoading(false);
+  }
+
+  const cliCmd = success ? `mcpm-dev add ${success.name}` : "";
+
+  const copyCli = () => {
+    navigator.clipboard.writeText(cliCmd);
+    setCliCopied(true);
+    setTimeout(() => setCliCopied(false), 2000);
+  };
+
+  // Success state
+  if (success) {
+    return (
+      <div className="rounded-2xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-white p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Check className="h-5 w-5 text-green-600" />
+          <h2 className="font-semibold text-slate-900">Published!</h2>
+        </div>
+        <p className="text-sm text-slate-600 mb-4">
+          <strong>{success.name}</strong> is now live on mcpm. Your users can install it with:
+        </p>
+        <div className="flex items-center rounded-lg border border-slate-200 bg-white overflow-hidden mb-4">
+          <span className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-500 shrink-0">
+            <Terminal className="h-4 w-4" />
+          </span>
+          <code className="flex-1 px-2 py-2 text-sm font-mono text-slate-800">{cliCmd}</code>
+          <button
+            onClick={copyCli}
+            className="flex items-center gap-1.5 border-l border-slate-200 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors shrink-0"
+          >
+            {cliCopied ? (
+              <>
+                <Check className="h-4 w-4 text-green-500" /> Copied
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" /> Copy
+              </>
+            )}
+          </button>
+        </div>
+        <Link
+          href={`/package/${success.name}`}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline"
+        >
+          View package page <ExternalLink className="h-3 w-3" />
+        </Link>
+      </div>
+    );
   }
 
   return (
