@@ -40,6 +40,20 @@ program
     }
   });
 
+// mcpm token
+program
+  .command("token")
+  .description("Print auth token to stdout (for piping)")
+  .action(() => {
+    const config = readConfig();
+    if (config.token) {
+      process.stdout.write(config.token);
+    } else {
+      console.error(chalk.red("Not logged in. Run: mcpm login"));
+      process.exit(1);
+    }
+  });
+
 // mcpm logout
 program
   .command("logout")
