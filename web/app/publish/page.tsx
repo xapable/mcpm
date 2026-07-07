@@ -1,5 +1,6 @@
 import { Terminal, ArrowRight, Github, Package, Check } from "lucide-react";
 import Link from "next/link";
+import { GitHubImport } from "./GitHubImport";
 
 export default function PublishPage() {
   return (
@@ -8,8 +9,16 @@ export default function PublishPage() {
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
           <Package className="h-6 w-6" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-900">Publish via CLI</h1>
-        <p className="mt-2 text-slate-500">One command. Your tool is live on mcpm.</p>
+        <h1 className="text-3xl font-bold text-slate-900">Publish a tool</h1>
+        <p className="mt-2 text-slate-500">Import from GitHub or publish via CLI.</p>
+      </div>
+
+      {/* GitHub Import */}
+      <GitHubImport />
+
+      <div className="relative my-10">
+        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
+        <div className="relative flex justify-center text-sm"><span className="bg-white px-4 text-slate-400">or via CLI</span></div>
       </div>
 
       <div className="space-y-6">
