@@ -43,7 +43,7 @@ export default async function HomePage() {
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-slate-300 leading-relaxed">
-            Discover tools, share what you build, learn from tutorials, and connect with MCP
+            Discover tools, share what you build, learn from the docs, and connect with MCP
             developers. The open community for AI agent tooling.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -91,13 +91,13 @@ export default async function HomePage() {
               </span>
             </Link>
 
-            {/* Tutorials */}
+            {/* Docs */}
             <Link href="/tutorials" className="group rounded-2xl border border-slate-200 bg-gradient-to-br from-green-50 to-white p-6 hover:border-green-300 hover:shadow-md transition-all">
               <div className="flex items-center gap-3 mb-3">
                 <div className="rounded-lg bg-green-100 p-2 text-green-600">
                   <Code2 className="h-5 w-5" />
                 </div>
-                <h3 className="font-semibold text-slate-900">Tutorials</h3>
+                <h3 className="font-semibold text-slate-900">Docs</h3>
               </div>
               <p className="text-sm text-slate-500">Step-by-step guides to build, publish, and scale your MCP tools.</p>
               <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-green-600 group-hover:underline">

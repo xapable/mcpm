@@ -32,7 +32,7 @@ export function Navbar() {
             href="/tutorials"
             className="rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
           >
-            Tutorials
+            Docs
           </Link>
           <a
             href="https://github.com/xapable/mcpm/discussions"

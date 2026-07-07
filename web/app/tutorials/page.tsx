@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Tutorials — mcpm",
+  title: "Docs — mcpm",
   description: "Learn how to build, publish, and use MCP tools with mcpm.",
 };
 
@@ -18,13 +18,13 @@ export default async function TutorialsPage({ searchParams }: { searchParams: { 
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold mb-2">Tutorials</h1>
+      <h1 className="text-4xl font-bold mb-2">Docs</h1>
       <p className="text-slate-500 mb-10">
-        Learn how to build, publish, and use MCP tools. <span className="text-slate-300">({total} tutorials)</span>
+        Learn how to build, publish, and use MCP tools. <span className="text-slate-300">({total} docs)</span>
       </p>
 
       {posts.length === 0 ? (
-        <p className="text-slate-400">No tutorials yet. Check back soon!</p>
+        <p className="text-slate-400">No docs yet. Check back soon!</p>
       ) : (
         <>
           <div className="space-y-8">

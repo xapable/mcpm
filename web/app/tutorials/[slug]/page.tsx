@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost(params.slug, "tutorial");
   if (!post) return { title: "Not Found" };
   return {
-    title: `${post.title} — mcpm Tutorials`,
+    title: `${post.title} — mcpm Docs`,
     description: post.description,
   };
 }
@@ -26,7 +26,7 @@ export default async function TutorialPostPage({ params }: Props) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <Link href="/tutorials" className="text-sm text-blue-600 hover:underline mb-8 inline-block">
-        ← Back to Tutorials
+        ← Back to Docs
       </Link>
       <article>
         <header className="mb-10">
@@ -57,7 +57,7 @@ export default async function TutorialPostPage({ params }: Props) {
       </article>
       <div className="mt-16 pt-8 border-t border-slate-200">
         <Link href="/tutorials" className="text-sm text-blue-600 hover:underline">
-          ← Back to all tutorials
+          ← Back to all docs
         </Link>
       </div>
     </div>
