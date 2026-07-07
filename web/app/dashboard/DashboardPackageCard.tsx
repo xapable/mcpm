@@ -7,10 +7,10 @@ import { Trash2, ExternalLink } from "lucide-react";
 
 interface Props {
   name: string;
-  description: string;
-  downloads: number;
-  createdAt: Date;
-  username: string;
+  description: string | null;
+  downloads: number | null;
+  createdAt: Date | null;
+  username: string | null;
 }
 
 export function DashboardPackageCard(props: Props) {
@@ -38,7 +38,7 @@ export function DashboardPackageCard(props: Props) {
           </Link>
           <p className="mt-1 text-sm text-slate-500 line-clamp-2">{props.description || "No description"}</p>
           <div className="mt-3 flex items-center gap-3 text-xs text-slate-400">
-            <span>{props.downloads} downloads</span>
+            <span>{props.downloads ?? 0} downloads</span>
             <Link href={`/package/${props.name}`} className="text-blue-600 hover:underline inline-flex items-center gap-1">
               View <ExternalLink className="h-3 w-3" />
             </Link>
