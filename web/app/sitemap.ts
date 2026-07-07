@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { packages } from "@/db/schema";
+import { getAllPosts } from "@/lib/content";
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://www.mcpm.dev";
@@ -15,6 +16,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${BASE_URL}/search`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/tutorials`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.8,
@@ -45,5 +58,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
-  return [...staticRoutes, ...packageRoutes];
+  // Blog & tutorial routes
+  const blogPosts = getAllPosts("blog");
+  const tutorialPosts = getAllPosts("tutorial");
+
+  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  const tutorialRoutes: MetadataRoute.Sitemap = tutorialPosts.map((post) => ({
+    url: `${BASE_URL}/tutorials/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...packageRoutes, ...blogRoutes, ...tutorialRoutes];
 }

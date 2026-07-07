@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, description, repoUrl, version, readme } = body;
+  const { name, description, repoUrl, version, readme, mcp } = body;
 
   if (!name || !version) {
     return NextResponse.json({ error: "name and version required" }, { status: 400 });
@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
       description: description || "",
       userId,
       repoUrl: repoUrl || "",
+      mcp: mcp || null,
     })
     .returning();
 

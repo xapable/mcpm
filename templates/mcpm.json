@@ -1,0 +1,23 @@
+{
+  "name": "my-mcp-server",
+  "version": "1.0.0",
+  "description": "Describe what your MCP tool does",
+  "publisher": "your-github-username",
+  "license": "MIT",
+  "repository": "https://github.com/you/my-mcp-server",
+  "mcp": {
+    "transport": "stdio",
+    "command": "node",
+    "args": ["server.js"],
+    "env": {},
+    "tools": [
+      {
+        "name": "example_tool",
+        "description": "What this tool does",
+        "parameters": {
+          "query": { "type": "string", "description": "The search query" }
+        }
+      }
+    ]
+  }
+}

@@ -22,6 +22,18 @@ export function Navbar() {
           >
             Discover
           </Link>
+          <Link
+            href="/blog"
+            className="rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            Blog
+          </Link>
+          <Link
+            href="/tutorials"
+            className="rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            Tutorials
+          </Link>
 
           {session ? (
             <>

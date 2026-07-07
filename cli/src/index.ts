@@ -83,6 +83,20 @@ program
     const readmePath = resolve("README.md");
     const readme = existsSync(readmePath) ? readFileSync(readmePath, "utf-8") : "";
 
+    // Read mcpm.json if present
+    const mcpmPath = resolve("mcpm.json");
+    let mcp = null;
+    if (existsSync(mcpmPath)) {
+      try {
+        mcp = JSON.parse(readFileSync(mcpmPath, "utf-8")).mcp;
+        if (mcp) {
+          console.log(chalk.dim("  Found mcpm.json — MCP configuration included"));
+        }
+      } catch {
+        console.log(chalk.yellow("  ⚠ mcpm.json is invalid, skipping"));
+      }
+    }
+
     if (!pkg.name) {
       console.log(chalk.red('✗ package.json must have a "name" field.'));
       process.exit(1);
@@ -95,8 +109,9 @@ program
         name: pkg.name,
         description: pkg.description || "",
         version: pkg.version || "1.0.0",
-        repoUrl: pkg.repository?.url || "",
+        repoUrl: pkg.repository?.url || pkg.homepage || "",
         readme,
+        mcp,
       });
 
       if (res.ok) {
@@ -146,19 +161,34 @@ program
         writeConfig({ ...config, installed });
       }
 
-      console.log(chalk.green(`\n✓ ${name} installed`));
+      console.log(chalk.green(`\n✓ ${name} added to your MCP client`));
 
-      // Show MCP client config
-      console.log(chalk.bold("\n📋 MCP Client Configuration:"));
-      console.log(chalk.dim("\n  Add this to your MCP client config:\n"));
-      console.log(chalk.cyan(`  {`));
-      console.log(chalk.cyan(`    "mcpServers": {`));
-      console.log(chalk.cyan(`      "${name}": {`));
-      console.log(chalk.cyan(`        "command": "npx",`));
-      console.log(chalk.cyan(`        "args": ["-y", "${name}"]`));
-      console.log(chalk.cyan(`      }`));
-      console.log(chalk.cyan(`    }`));
-      console.log(chalk.cyan(`  }`));
+      // Show MCP client config using mcpm.json if available, or default
+      const mcp = pkg.mcp;
+      if (mcp) {
+        console.log(chalk.bold("\n📋 MCP Client Configuration:"));
+        console.log(chalk.dim("\n  Add this to your MCP client config:\n"));
+        console.log(chalk.cyan(`  {`));
+        console.log(chalk.cyan(`    "mcpServers": {`));
+        console.log(chalk.cyan(`      "${name}": {`));
+        console.log(chalk.cyan(`        "command": "${mcp.command || "node"}",`));
+        if (mcp.args) console.log(chalk.cyan(`        "args": ${JSON.stringify(mcp.args)},`));
+        if (mcp.env && Object.keys(mcp.env).length) console.log(chalk.cyan(`        "env": ${JSON.stringify(mcp.env)},`));
+        console.log(chalk.cyan(`      }`));
+        console.log(chalk.cyan(`    }`));
+        console.log(chalk.cyan(`  }`));
+      } else {
+        console.log(chalk.bold("\n📋 MCP Client Configuration:"));
+        console.log(chalk.dim("\n  Add this to your MCP client config:\n"));
+        console.log(chalk.cyan(`  {`));
+        console.log(chalk.cyan(`    "mcpServers": {`));
+        console.log(chalk.cyan(`      "${name}": {`));
+        console.log(chalk.cyan(`        "command": "npx",`));
+        console.log(chalk.cyan(`        "args": ["-y", "${name}"]`));
+        console.log(chalk.cyan(`      }`));
+        console.log(chalk.cyan(`    }`));
+        console.log(chalk.cyan(`  }`));
+      }
 
       if (pkg.readme) {
         console.log(chalk.dim(`\n  Run "mcpm-dev info ${name}" for full README`));

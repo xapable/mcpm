@@ -15,6 +15,7 @@ export async function GET(
       description: packages.description,
       repoUrl: packages.repoUrl,
       downloads: packages.downloads,
+      mcp: packages.mcp,
       createdAt: packages.createdAt,
       username: users.username,
       version: versions.version,

@@ -1,0 +1,13 @@
+{
+  "name": "starter-mcp",
+  "version": "1.0.0",
+  "description": "A starter MCP server template with example tools",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

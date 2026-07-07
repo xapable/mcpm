@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, serial, index, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, serial, index, primaryKey, jsonb } from "drizzle-orm/pg-core";
 
 // NextAuth tables
 export const users = pgTable("user", {
@@ -39,6 +39,7 @@ export const packages = pgTable("package", {
   userId: text("userId").references(() => users.id).notNull(),
   repoUrl: text("repoUrl").default(""),
   downloads: integer("downloads").default(0),
+  mcp: jsonb("mcp"),
   createdAt: timestamp("createdAt").defaultNow(),
 }, (table) => ({
   nameIdx: index("name_idx").on(table.name),
