@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getAllPosts } from "@/lib/content";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Tutorials — mcpm",
   description: "Learn how to build, publish, and use MCP tools with mcpm.",

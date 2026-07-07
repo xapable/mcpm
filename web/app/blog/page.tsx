@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getAllPosts } from "@/lib/content";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog — mcpm",
   description: "Latest news, updates, and announcements from the mcpm team.",
