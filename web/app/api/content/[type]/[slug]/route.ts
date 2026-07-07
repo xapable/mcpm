@@ -12,7 +12,7 @@ export async function GET(
   }
 
   const contentType = type === "blog" ? "blog" : "tutorial";
-  const post = getPost(slug, contentType);
+  const post = await getPost(slug, contentType);
 
   if (!post) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

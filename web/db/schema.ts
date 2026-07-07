@@ -59,3 +59,20 @@ export const stars = pgTable("star", {
   packageId: integer("packageId").references(() => packages.id).notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
 });
+
+// Blog & Tutorial posts
+export const posts = pgTable("post", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  type: text("type").notNull(), // "blog" or "tutorial"
+  title: text("title").notNull(),
+  description: text("description").default(""),
+  content: text("content").default(""),
+  author: text("author").default("mcpm"),
+  tags: text("tags").array().default([]),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").defaultNow(),
+}, (table) => ({
+  slugIdx: index("post_slug_idx").on(table.slug),
+  typeIdx: index("post_type_idx").on(table.type),
+}));

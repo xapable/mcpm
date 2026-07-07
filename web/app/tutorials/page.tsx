@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: "Learn how to build, publish, and use MCP tools with mcpm.",
 };
 
-export default function TutorialsPage() {
-  const posts = getAllPosts("tutorial");
+export default async function TutorialsPage() {
+  const posts = await getAllPosts("tutorial");
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">

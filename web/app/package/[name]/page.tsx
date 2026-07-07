@@ -3,10 +3,47 @@ import { Download, User, Clock } from "lucide-react";
 import { formatNumber, timeAgo } from "@/lib/utils";
 import { getPackageData } from "@/lib/data";
 import { StarButton } from "@/components/StarButton";
+import { SetupButtons } from "./SetupButtons";
 
 interface PackagePageProps {
   params: { name: string };
 }
+
+function getClientConfig(name: string, meta: any) {
+  const command = meta.command || "npx";
+  const args = meta.args || ["-y", name];
+  const env = meta.env || {};
+
+  return {
+    claude: {
+      mcpServers: {
+        [name]: { command, args, ...(Object.keys(env).length ? { env } : {}) },
+      },
+    },
+    cursor: {
+      mcpServers: {
+        [name]: { command, args, ...(Object.keys(env).length ? { env } : {}) },
+      },
+    },
+    windsurf: {
+      mcpServers: {
+        [name]: { command, args, ...(Object.keys(env).length ? { env } : {}) },
+      },
+    },
+    vscode: {
+      servers: {
+        [name]: { type: "stdio", command, args, ...(Object.keys(env).length ? { env } : {}) },
+      },
+    },
+  };
+}
+
+const CLIENTS = [
+  { id: "claude", name: "Claude Desktop", icon: "🧠", path: "~/Library/Application Support/Claude/claude_desktop_config.json" },
+  { id: "cursor", name: "Cursor", icon: "⌨️", path: "~/.cursor/mcp.json" },
+  { id: "windsurf", name: "Windsurf", icon: "🏄", path: "~/.codeium/windsurf/mcp_config.json" },
+  { id: "vscode", name: "VS Code", icon: "🟦", path: ".vscode/mcp.json" },
+];
 
 export default async function PackagePage({ params }: PackagePageProps) {
   const pkg = await getPackageData(params.name);
@@ -14,6 +51,8 @@ export default async function PackagePage({ params }: PackagePageProps) {
   if (!pkg) {
     notFound();
   }
+
+  const configs = getClientConfig(pkg.name, {});
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -38,10 +77,11 @@ export default async function PackagePage({ params }: PackagePageProps) {
         <StarButton packageName={pkg.name} />
       </div>
 
-      {/* Install command */}
-      <div className="mt-8 rounded-xl border border-slate-300 bg-slate-900 p-4">
-        <p className="mb-2 text-xs text-slate-400">Install</p>
-        <code className="text-lg text-green-400">$ mcpm-dev add {pkg.name}</code>
+      {/* One-click setup */}
+      <div className="mt-8 rounded-xl border-2 border-blue-200 bg-blue-50 p-6">
+        <h2 className="text-lg font-bold text-blue-900">⚡ Add to your MCP client</h2>
+        <p className="mt-1 text-sm text-blue-700">Click a client to copy the config, then paste it into your settings.</p>
+        <SetupButtons configs={configs} clients={CLIENTS} />
       </div>
 
       {/* README */}

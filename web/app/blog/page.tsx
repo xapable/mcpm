@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: "Latest news, updates, and announcements from the mcpm team.",
 };
 
-export default function BlogPage() {
-  const posts = getAllPosts("blog");
+export default async function BlogPage() {
+  const posts = await getAllPosts("blog");
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">

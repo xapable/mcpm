@@ -8,7 +8,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = getPost(params.slug, "tutorial");
+  const post = await getPost(params.slug, "tutorial");
   if (!post) return { title: "Not Found" };
   return {
     title: `${post.title} — mcpm Tutorials`,
@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function TutorialPostPage({ params }: Props) {
-  const post = getPost(params.slug, "tutorial");
+export default async function TutorialPostPage({ params }: Props) {
+  const post = await getPost(params.slug, "tutorial");
   if (!post) notFound();
 
   return (

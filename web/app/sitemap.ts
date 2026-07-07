@@ -59,8 +59,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Blog & tutorial routes
-  const blogPosts = getAllPosts("blog");
-  const tutorialPosts = getAllPosts("tutorial");
+  const blogPosts = await getAllPosts("blog");
+  const tutorialPosts = await getAllPosts("tutorial");
 
   const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,

@@ -8,18 +8,18 @@ export async function GET(request: Request) {
   const type = searchParams.get("type") as "blog" | "tutorial" | null;
 
   if (q) {
-    return NextResponse.json(searchPosts(q));
+    return NextResponse.json(await searchPosts(q));
   }
 
   if (type === "blog") {
-    return NextResponse.json(getAllPosts("blog"));
+    return NextResponse.json(await getAllPosts("blog"));
   }
 
   if (type === "tutorial") {
-    return NextResponse.json(getAllPosts("tutorial"));
+    return NextResponse.json(await getAllPosts("tutorial"));
   }
 
-  return NextResponse.json(getAllContent());
+  return NextResponse.json(await getAllContent());
 }
 
 /** Create a new blog post or tutorial (requires Bearer auth) */
@@ -50,18 +50,19 @@ export async function POST(request: NextRequest) {
   const postSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
   try {
-    const filePath = createPost(type, postSlug, {
+    const post = await createPost(type, postSlug, {
       title,
       description: description || "",
       author: user.username,
       tags: tags || [],
+      content: content || "",
     });
 
     return NextResponse.json({
       success: true,
       slug: postSlug,
       url: `https://www.mcpm.dev/${type === "blog" ? "blog" : "tutorials"}/${postSlug}`,
-      filePath,
+      post,
     }, { status: 201 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to create post" }, { status: 500 });
