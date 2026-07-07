@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface TocItem {
   id: string;
@@ -22,18 +22,18 @@ export function PostContent({ html }: { html: string }) {
     document.head.appendChild(link);
   }, []);
 
-  // Generate ToC from headings
-  const tocItems = useMemo(() => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const headings = doc.querySelectorAll("h2, h3");
-    const items: TocItem[] = [];
-    headings.forEach((h, i) => {
-      items.push({ id: `heading-${i}`, text: h.textContent || "", level: parseInt(h.tagName[1]) });
-    });
-    return items;
+  // Generate ToC from headings (client-only — DOMParser not available in SSR)
+  useEffect(() => {
+    try {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const headings = doc.querySelectorAll("h2, h3");
+      const items: TocItem[] = [];
+      headings.forEach((h, i) => {
+        items.push({ id: `heading-${i}`, text: h.textContent || "", level: parseInt(h.tagName[1]) });
+      });
+      setToc(items);
+    } catch { /* SSR — skip */ }
   }, [html]);
-
-  useEffect(() => { setToc(tocItems); }, [tocItems]);
 
   // Add IDs to headings and language labels to code blocks
   useEffect(() => {
