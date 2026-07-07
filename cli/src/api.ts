@@ -1,4 +1,4 @@
-import { getToken, getUsername, saveToken } from "./config";
+import { getToken, getUsername, saveToken } from "./config.js";
 import chalk from "chalk";
 
 const REGISTRY_URL = process.env.MCPM_REGISTRY || "https://mcpm.dev";

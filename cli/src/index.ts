@@ -5,15 +5,15 @@ import chalk from "chalk";
 import ora from "ora";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
-import { loginViaBrowser, setAuth, whoAmI, apiPost } from "./api";
-import { clearToken } from "./config";
+import { loginViaBrowser, setAuth, whoAmI, apiPost } from "./api.js";
+import { clearToken } from "./config.js";
 
 const REGISTRY_URL = process.env.MCPM_REGISTRY || "https://mcpm.dev";
 
 const program = new Command();
 
 program
-  .name("mcpm-cli")
+  .name("mcpm-dev")
   .description("MCP Package Manager — publish and install MCP tools")
   .version("0.1.0");
 
@@ -62,7 +62,7 @@ program
     }
   });
 
-// mcpm-cli publish
+// mcpm-dev publish
 program
   .command("publish")
   .description("Publish current directory as an MCP tool")
@@ -110,7 +110,7 @@ program
     }
   });
 
-// mcpm-cli add <name>
+// mcpm-dev add <name>
 program
   .command("add <name>")
   .description("Install an MCP tool")
