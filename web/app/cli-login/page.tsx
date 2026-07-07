@@ -21,7 +21,7 @@ export default function CliLoginPage() {
   const copyCommand = async () => {
     if (!token || !session?.user?.name) return;
     await navigator.clipboard.writeText(
-      `mcpm auth --token ${token} --username ${session.user.name}`
+      `mcpm-dev auth --token ${token} --username ${session.user.name}`
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);

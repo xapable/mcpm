@@ -17,7 +17,7 @@ export async function getHomeData() {
       downloads: pkgTable.downloads,
       createdAt: pkgTable.createdAt,
       username: users.username,
-      avatar: users.avatar,
+      avatar: users.image,
     })
     .from(pkgTable)
     .leftJoin(users, eq(pkgTable.userId, users.id))
@@ -37,7 +37,7 @@ export async function getPackageData(name: string) {
       createdAt: pkgTable.createdAt,
       userId: pkgTable.userId,
       username: users.username,
-      avatar: users.avatar,
+      avatar: users.image,
       version: versions.version,
       readme: versions.readme,
       versionCreatedAt: versions.createdAt,
@@ -81,7 +81,7 @@ export async function getUserPackages(userId: string) {
       downloads: pkgTable.downloads,
       createdAt: pkgTable.createdAt,
       username: users.username,
-      avatar: users.avatar,
+      avatar: users.image,
     })
     .from(pkgTable)
     .leftJoin(users, eq(pkgTable.userId, users.id))

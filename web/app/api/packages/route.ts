@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       downloads: packages.downloads,
       createdAt: packages.createdAt,
       username: users.username,
-      avatar: users.avatar,
+      avatar: users.image,
     })
     .from(packages)
     .leftJoin(users, eq(packages.userId, users.id))
