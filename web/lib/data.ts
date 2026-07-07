@@ -38,6 +38,7 @@ export async function getPackageData(name: string) {
       userId: pkgTable.userId,
       username: users.username,
       avatar: users.image,
+      mcp: pkgTable.mcp,
       version: versions.version,
       readme: versions.readme,
       versionCreatedAt: versions.createdAt,
@@ -68,6 +69,7 @@ export async function getPackageData(name: string) {
     username: pkg.username ?? "unknown",
     avatar: pkg.avatar,
     version: pkg.version ?? "0.1.0",
+    mcp: pkg.mcp,
     readme: pkg.readme ?? "",
     versions: allVersions,
   };

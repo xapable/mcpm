@@ -12,37 +12,60 @@ interface PackagePageProps {
 function getClientConfig(name: string, meta: any) {
   const command = meta.command || "npx";
   const args = meta.args || ["-y", name];
-  const env = meta.env || {};
+  const hasEnv = meta.env && Object.keys(meta.env).length > 0;
+
+  // Universal stdio config — works on ALL MCP clients (Claude, ChatGPT, Cursor, Windsurf, etc.)
+  const stdio = { command, args, ...(hasEnv ? { env: meta.env } : {}) };
+  const stdioWithType = { type: "stdio", ...stdio };
 
   return {
-    claude: {
-      mcpServers: {
-        [name]: { command, args, ...(Object.keys(env).length ? { env } : {}) },
-      },
+    universal: {
+      mcpServers: { [name]: stdio },
     },
-    cursor: {
-      mcpServers: {
-        [name]: { command, args, ...(Object.keys(env).length ? { env } : {}) },
-      },
+    universalTyped: {
+      mcpServers: { [name]: stdioWithType },
     },
-    windsurf: {
-      mcpServers: {
-        [name]: { command, args, ...(Object.keys(env).length ? { env } : {}) },
-      },
-    },
-    vscode: {
-      servers: {
-        [name]: { type: "stdio", command, args, ...(Object.keys(env).length ? { env } : {}) },
-      },
-    },
+    mcpmSh: `mcpm install ${name}`,
+    claudeCli: `claude mcp add --transport stdio ${name} -- ${command} ${args.join(" ")}`,
+    cursorCli: `cursor mcp add ${name} -- ${command} ${args.join(" ")}`,
+    codexCli: `codex mcp add ${name}`,
   };
 }
 
 const CLIENTS = [
-  { id: "claude", name: "Claude Desktop", icon: "🧠", path: "~/Library/Application Support/Claude/claude_desktop_config.json" },
-  { id: "cursor", name: "Cursor", icon: "⌨️", path: "~/.cursor/mcp.json" },
-  { id: "windsurf", name: "Windsurf", icon: "🏄", path: "~/.codeium/windsurf/mcp_config.json" },
-  { id: "vscode", name: "VS Code", icon: "🟦", path: ".vscode/mcp.json" },
+  {
+    id: "universal",
+    name: "Universal",
+    icon: "🔌",
+    type: "json" as const,
+    description: "Works with all MCP clients",
+    paths: [
+      { client: "Claude Desktop", path: "~/Library/Application Support/Claude/claude_desktop_config.json" },
+      { client: "ChatGPT", path: "Settings → Integrations → MCP" },
+      { client: "Cursor", path: "~/.cursor/mcp.json" },
+      { client: "Windsurf", path: "~/.codeium/windsurf/mcp_config.json" },
+      { client: "VS Code / Copilot", path: ".vscode/mcp.json" },
+      { client: "Claude Code", path: ".mcp.json" },
+      { client: "Gemini CLI", path: "~/.gemini/mcp.json" },
+      { client: "Codex CLI", path: "~/.codex/mcp.json" },
+      { client: "Continue", path: "~/.continue/config.json" },
+      { client: "Cline / Roo Code", path: "Settings → MCP Servers" },
+    ],
+  },
+  {
+    id: "mcpmSh",
+    name: "mcpm.sh",
+    icon: "📦",
+    type: "cmd" as const,
+    description: "One command install",
+  },
+  {
+    id: "claudeCli",
+    name: "Claude Code CLI",
+    icon: "💻",
+    type: "cmd" as const,
+    description: "Terminal command",
+  },
 ];
 
 export default async function PackagePage({ params }: PackagePageProps) {
@@ -52,7 +75,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
     notFound();
   }
 
-  const configs = getClientConfig(pkg.name, {});
+  const configs = getClientConfig(pkg.name, pkg.mcp || {});
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
