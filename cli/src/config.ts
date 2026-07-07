@@ -8,6 +8,7 @@ const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 interface Config {
   token?: string;
   username?: string;
+  installed?: string[];
 }
 
 export function ensureConfig(): void {

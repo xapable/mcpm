@@ -1,6 +1,6 @@
 {
   "name": "mcpm-dev",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "description": "MCP Package Manager — publish and install MCP tools",
   "main": "dist/index.js",

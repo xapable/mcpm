@@ -5,8 +5,8 @@ import chalk from "chalk";
 import ora from "ora";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
-import { loginViaBrowser, setAuth, whoAmI, apiPost } from "./api.js";
-import { clearToken } from "./config.js";
+import { loginViaBrowser, setAuth, whoAmI, apiPost, apiGet } from "./api.js";
+import { readConfig, writeConfig, clearToken } from "./config.js";
 
 const REGISTRY_URL = process.env.MCPM_REGISTRY || "https://mcpm.dev";
 
@@ -115,30 +115,123 @@ program
   .command("add <name>")
   .description("Install an MCP tool")
   .action(async (name: string) => {
-    console.log(chalk.blue(`\n📥 Installing ${chalk.bold(name)}...\n`));
+    const spinner = ora(`Fetching ${name}...`).start();
 
-    // Track install
-    fetch(`${REGISTRY_URL}/api/packages/${encodeURIComponent(name)}/download`, {
-      method: "POST",
-    }).catch(() => {
-      // Silently ignore — tracking is best-effort
-    });
+    try {
+      const res = await apiGet(`/api/packages/${encodeURIComponent(name)}`);
+      if (res.status === 404) {
+        spinner.fail(`Package "${name}" not found on mcpm.dev`);
+        console.log(chalk.dim("\n  Search: mcpm-dev search " + name.split("-")[0]));
+        process.exit(1);
+      }
+      if (!res.ok) {
+        spinner.fail(`Failed to fetch package info`);
+        process.exit(1);
+      }
 
-    console.log(chalk.green(`✓ Added ${name} to your agent`));
-    console.log(chalk.dim(`\n  import { ${toCamelCase(name)} } from "${name}";`));
+      const pkg = await res.json();
+      spinner.succeed(chalk.green(`Found ${pkg.name} v${pkg.version} by ${pkg.username}`));
+
+      console.log(chalk.dim(`\n  ${pkg.description}`));
+      console.log(chalk.dim(`  Repo: ${pkg.repoUrl || "N/A"}`));
+
+      // Track install
+      apiPost(`/api/packages/${encodeURIComponent(name)}/download`, {}).catch(() => {});
+
+      // Save to installed list
+      const config = readConfig();
+      const installed = config.installed || [];
+      if (!installed.includes(name)) {
+        installed.push(name);
+        writeConfig({ ...config, installed });
+      }
+
+      console.log(chalk.green(`\n✓ ${name} installed`));
+
+      // Show MCP client config
+      console.log(chalk.bold("\n📋 MCP Client Configuration:"));
+      console.log(chalk.dim("\n  Add this to your MCP client config:\n"));
+      console.log(chalk.cyan(`  {`));
+      console.log(chalk.cyan(`    "mcpServers": {`));
+      console.log(chalk.cyan(`      "${name}": {`));
+      console.log(chalk.cyan(`        "command": "npx",`));
+      console.log(chalk.cyan(`        "args": ["-y", "${name}"]`));
+      console.log(chalk.cyan(`      }`));
+      console.log(chalk.cyan(`    }`));
+      console.log(chalk.cyan(`  }`));
+
+      if (pkg.readme) {
+        console.log(chalk.dim(`\n  Run "mcpm-dev info ${name}" for full README`));
+      }
+    } catch {
+      spinner.fail("Cannot reach registry. Is mcpm.dev online?");
+      process.exit(1);
+    }
+  });
+
+// mcpm-dev info <name>
+program
+  .command("info <name>")
+  .description("Show package details and README")
+  .action(async (name: string) => {
+    const spinner = ora(`Loading ${name}...`).start();
+
+    try {
+      const res = await apiGet(`/api/packages/${encodeURIComponent(name)}`);
+      if (res.status === 404) {
+        spinner.fail(`Package "${name}" not found`);
+        process.exit(1);
+      }
+      const pkg = await res.json();
+      spinner.stop();
+
+      console.log(chalk.bold(`\n${pkg.name} v${pkg.version}`));
+      console.log(chalk.dim(`by ${pkg.username} — ${pkg.downloads} installs`));
+      console.log(`\n${pkg.description}`);
+
+      if (pkg.readme) {
+        console.log(chalk.bold("\n─── README ───"));
+        console.log(pkg.readme);
+      }
+    } catch {
+      spinner.fail("Cannot reach registry");
+      process.exit(1);
+    }
   });
 
 // mcpm search <query>
 program
   .command("search <query>")
   .description("Search the registry")
-  .action((query: string) => {
-    console.log(chalk.blue(`\n🔍 Searching for "${query}"...\n`));
-    console.log(chalk.dim("Visit ") + chalk.cyan(`${REGISTRY_URL}/search?q=${encodeURIComponent(query)}`));
+  .action(async (query: string) => {
+    const spinner = ora(`Searching for "${query}"...`).start();
+
+    try {
+      const res = await apiGet(`/api/search?q=${encodeURIComponent(query)}`);
+      const results = await res.json();
+
+      spinner.stop();
+
+      if (results.length === 0) {
+        console.log(chalk.yellow(`\nNo packages found for "${query}"`));
+        console.log(chalk.dim("  Try a different search term or publish your own:"));
+        console.log(chalk.dim("  mcpm-dev publish"));
+        return;
+      }
+
+      console.log(chalk.bold(`\nFound ${results.length} package${results.length > 1 ? "s" : ""}:\n`));
+
+      for (const pkg of results) {
+        console.log(chalk.cyan(`  ${pkg.name}`) + chalk.dim(` v${pkg.version || "?"}`));
+        console.log(chalk.dim(`    ${pkg.description}`));
+        console.log(chalk.dim(`    by ${pkg.username} — ${pkg.downloads} installs`));
+        console.log();
+      }
+
+      console.log(chalk.dim(`  Install: mcpm-dev add <name>`));
+    } catch {
+      spinner.fail("Cannot reach registry");
+    }
   });
 
 program.parse();
-
-function toCamelCase(name: string): string {
-  return name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-}
