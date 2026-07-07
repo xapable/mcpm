@@ -1,20 +1,31 @@
-// In production, store tokens in DB with expiry
-const tokenStore = new Map<string, { userId: string; username: string }>();
+import { SignJWT, jwtVerify } from "jose";
 
-export function generateCliToken(): string {
-  const crypto = require("crypto");
-  return crypto.randomBytes(32).toString("hex");
+const secret = new TextEncoder().encode(process.env.AUTH_SECRET!);
+
+export async function generateCliToken(data: {
+  userId: string;
+  username: string;
+}): Promise<string> {
+  return new SignJWT(data)
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("30d")
+    .sign(secret);
 }
 
-export function storeCliToken(
+export async function storeCliToken(
   token: string,
   data: { userId: string; username: string }
 ) {
-  tokenStore.set(token, data);
+  // JWT tokens are self-contained — no server-side storage needed
 }
 
-export function verifyCliToken(
+export async function verifyCliToken(
   token: string
-): { userId: string; username: string } | null {
-  return tokenStore.get(token) || null;
+): Promise<{ userId: string; username: string } | null> {
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload as { userId: string; username: string };
+  } catch {
+    return null;
+  }
 }

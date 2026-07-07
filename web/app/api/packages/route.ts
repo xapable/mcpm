@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (!token) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
-    const cliUser = verifyCliToken(token);
+    const cliUser = await verifyCliToken(token);
     if (!cliUser) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }

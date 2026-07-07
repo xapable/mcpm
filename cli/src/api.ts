@@ -1,7 +1,7 @@
 import { getToken, getUsername, saveToken } from "./config.js";
 import chalk from "chalk";
 
-const REGISTRY_URL = process.env.MCPM_REGISTRY || "https://mcpm.dev";
+const REGISTRY_URL = process.env.MCPM_REGISTRY || "https://www.mcpm.dev";
 
 export async function apiPost(path: string, body: Record<string, unknown>) {
   const token = getToken();
