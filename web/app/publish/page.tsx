@@ -1,108 +1,78 @@
-"use client";
-
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Package, Github } from "lucide-react";
+import { Terminal, ArrowRight, Github, Package, Check } from "lucide-react";
+import Link from "next/link";
 
 export default function PublishPage() {
-  const { data: session } = useSession();
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  if (!session) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-slate-500">Sign in to publish tools.</p>
-      </div>
-    );
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    const form = new FormData(e.currentTarget);
-
-    const res = await fetch("/api/packages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.get("name"),
-        description: form.get("description"),
-        version: "1.0.0",
-        repoUrl: form.get("repoUrl"),
-        readme: `# ${form.get("name")}\n\n${form.get("description") || "An MCP tool."}`,
-      }),
-    });
-
-    if (res.ok) {
-      router.push(`/package/${form.get("name")}`);
-    } else {
-      const data = await res.json();
-      setError(data.error || "Failed to publish");
-    }
-    setLoading(false);
-  };
-
   return (
-    <div className="mx-auto max-w-lg px-4 py-16">
-      <div className="text-center mb-10">
+    <div className="mx-auto max-w-2xl px-4 py-16">
+      <div className="text-center mb-12">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
           <Package className="h-6 w-6" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-900">Publish a tool</h1>
-        <p className="mt-2 text-slate-500">
-          Share your MCP server. One command, live on mcpm.
-        </p>
+        <h1 className="text-3xl font-bold text-slate-900">Publish via CLI</h1>
+        <p className="mt-2 text-slate-500">One command. Your tool is live on mcpm.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Package name</label>
-          <input
-            name="name"
-            required
-            placeholder="my-awesome-mcp"
-            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          />
-        </div>
+      <div className="space-y-6">
+        {[
+          {
+            step: "1",
+            title: "Install the CLI",
+            code: "npm install -g mcpm-dev",
+            hint: "",
+          },
+          {
+            step: "2",
+            title: "Sign in with GitHub",
+            code: "mcpm-dev login",
+            hint: "Opens your browser — sign in with GitHub.",
+          },
+          {
+            step: "3",
+            title: "Prepare your package.json",
+            code: `{\n  "name": "my-awesome-mcp",\n  "version": "1.0.0",\n  "description": "Does something amazing",\n  "main": "server.js"\n}`,
+            hint: "Your MCP tool needs a package.json in its directory.",
+          },
+          {
+            step: "4",
+            title: "Publish",
+            code: "cd my-mcp-server\nmcpm-dev publish",
+            hint: "",
+            done: "Your tool is live at mcpm.dev/package/my-awesome-mcp",
+          },
+        ].map((item) => (
+          <div key={item.step} className="rounded-xl border border-slate-200 p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">
+                {item.step}
+              </span>
+              <h2 className="font-semibold text-slate-900">{item.title}</h2>
+            </div>
+            <div className="ml-10 rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-300 whitespace-pre-wrap">
+              {item.code}
+            </div>
+            {item.hint && (
+              <p className="ml-10 mt-2 text-sm text-slate-500">{item.hint}</p>
+            )}
+            {item.done && (
+              <div className="ml-10 mt-3 flex items-center gap-2 text-sm text-green-600">
+                <Check className="h-4 w-4" />
+                {item.done}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-          <input
-            name="description"
-            placeholder="What does your tool do?"
-            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            <span className="inline-flex items-center gap-1.5">
-              <Github className="h-3.5 w-3.5" /> Repository URL
-            </span>
-          </label>
-          <input
-            name="repoUrl"
-            placeholder="https://github.com/you/repo"
-            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          />
-        </div>
-
-        {error && (
-          <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-slate-900 py-2.5 font-medium text-white hover:bg-slate-800 disabled:opacity-50 transition-colors"
-        >
-          {loading ? "Publishing..." : "Publish"}
-        </button>
-      </form>
+      <div className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
+        <p className="text-sm text-slate-600">
+          Need help?{" "}
+          <Link href="/tutorials" className="text-blue-600 hover:underline">Read tutorials</Link>
+          {" "}or{" "}
+          <a href="https://github.com/xapable/mcpm/discussions" target="_blank" className="text-blue-600 hover:underline inline-flex items-center gap-1">
+            ask on GitHub <Github className="h-3 w-3" />
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
