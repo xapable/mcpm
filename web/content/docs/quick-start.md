@@ -23,6 +23,16 @@ Create `package.json`:
 {"name":"hello-mcp","version":"1.0.0","main":"server.js"}
 ```
 
+Create `mcpm.json` (recommended — becomes the client `mcpServers` config):
+```json
+{"mcp":{"transport":"stdio","command":"node","args":["server.js"]}}
+```
+
+Create `server.js` (your MCP server entry point):
+```js
+// Your MCP server code here
+```
+
 ## 4. Publish
 ```bash
 mcpm-dev publish

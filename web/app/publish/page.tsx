@@ -28,12 +28,18 @@ export default function PublishPage() {
           },
           {
             step: "3",
-            title: "Prepare your package.json",
-            code: `{\n  "name": "my-awesome-mcp",\n  "version": "1.0.0",\n  "description": "Does something amazing",\n  "main": "server.js"\n}`,
-            hint: "Your MCP tool needs a package.json in its directory.",
+            title: "Create your project structure",
+            code: `my-mcp-server/\n├── package.json      ← name, version, entry point\n├── server.js         ← your MCP server code\n├── mcpm.json         ← client config (recommended)\n└── README.md         ← docs for your users`,
+            hint: "These 4 files are all you need. Use mcpm.json to tell clients how to run your server.",
           },
           {
             step: "4",
+            title: "Configure mcpm.json (recommended)",
+            code: `{\n  "mcp": {\n    "transport": "stdio",\n    "command": "node",\n    "args": ["server.js"],\n    "env": {}\n  }\n}`,
+            hint: "mcpm.json becomes the mcpServers config your users paste into their client. Include env vars like API keys here.",
+          },
+          {
+            step: "5",
             title: "Publish",
             code: "cd my-mcp-server\nmcpm-dev publish",
             hint: "",
