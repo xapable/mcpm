@@ -57,6 +57,36 @@ export async function getAllPosts(type: "blog" | "tutorial"): Promise<PostMeta[]
   return Promise.all(rows.map(rowToMeta));
 }
 
+export interface PaginatedResult {
+  posts: PostMeta[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+/** Get paginated posts of a given type */
+export async function getPaginatedPosts(
+  type: "blog" | "tutorial",
+  page: number = 1,
+  limit: number = 10
+): Promise<PaginatedResult> {
+  const offset = (page - 1) * limit;
+  const [rows, countResult] = await Promise.all([
+    db.select().from(posts).where(eq(posts.type, type)).orderBy(desc(posts.createdAt)).limit(limit).offset(offset),
+    db.select({ count: sql<number>`count(*)` }).from(posts).where(eq(posts.type, type)),
+  ]);
+
+  const total = countResult[0]?.count ?? 0;
+  return {
+    posts: await Promise.all(rows.map(rowToMeta)),
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
+}
+
 /** Get all posts (blog + tutorials) combined, sorted by date */
 export async function getAllContent(): Promise<PostMeta[]> {
   const rows = await db.select().from(posts).orderBy(desc(posts.createdAt));

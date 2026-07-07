@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPost } from "@/lib/content";
+import { PostContent } from "@/components/PostContent";
 import type { Metadata } from "next";
 
 interface Props {
@@ -20,42 +21,43 @@ export default async function TutorialPostPage({ params }: Props) {
   const post = await getPost(params.slug, "tutorial");
   if (!post) notFound();
 
+  const readingTime = Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200));
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <Link href="/tutorials" className="text-sm text-blue-600 hover:underline mb-6 inline-block">
+      <Link href="/tutorials" className="text-sm text-blue-600 hover:underline mb-8 inline-block">
         ← Back to Tutorials
       </Link>
       <article>
-        <div className="mb-8">
-          <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
-            <time>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
-            <span>·</span>
-            <span>{post.author}</span>
-          </div>
-          <h1 className="text-4xl font-bold">{post.title}</h1>
+        <header className="mb-10">
           {post.tags.length > 0 && (
-            <div className="flex gap-2 mt-3">
+            <div className="flex flex-wrap gap-2 mb-4">
               {post.tags.map((tag) => (
-                <span key={tag} className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                <span key={tag} className="rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
                   {tag}
                 </span>
               ))}
             </div>
           )}
-        </div>
-        <div
-          className="prose prose-slate max-w-none
-            prose-headings:font-semibold prose-headings:text-slate-900
-            prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
-            prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-            prose-p:text-slate-700 prose-p:leading-relaxed
-            prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-            prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-            prose-pre:bg-slate-900 prose-pre:text-slate-100
-            prose-li:text-slate-700"
-          dangerouslySetInnerHTML={{ __html: post.html }}
-        />
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900 leading-tight">
+            {post.title}
+          </h1>
+          <p className="mt-3 text-lg text-slate-500">{post.description}</p>
+          <div className="mt-6 flex items-center gap-3 text-sm text-slate-400">
+            <time>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
+            <span className="text-slate-300">·</span>
+            <span>{readingTime} min read</span>
+            <span className="text-slate-300">·</span>
+            <span>{post.author}</span>
+          </div>
+        </header>
+        <PostContent html={post.html} />
       </article>
+      <div className="mt-16 pt-8 border-t border-slate-200">
+        <Link href="/tutorials" className="text-sm text-blue-600 hover:underline">
+          ← Back to all tutorials
+        </Link>
+      </div>
     </div>
   );
 }
