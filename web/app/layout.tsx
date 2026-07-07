@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "mcpm — MCP Package Manager",
   description: "Discover, publish, and manage MCP tools for AI agents.",
+  icons: {
+    icon: "/favicon.svg",
+  },
   // Google Search Console verification — replace with your own verification code
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
