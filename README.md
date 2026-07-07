@@ -2,65 +2,82 @@
 
 The central registry for MCP tools. Like npm, for AI agents.
 
-**Discover, publish, and share MCP servers.** Works with any MCP client (Claude Desktop, Cursor, Windsurf, mcpm.sh, etc.).
+**Discover, publish, and share MCP servers.** Search at [mcpm.dev/search](https://www.mcpm.dev/search), publish with one CLI command, install anywhere.
 
 ## Why mcpm.dev
 
 MCP tools are scattered across GitHub repos. There's no central place to discover them. mcpm.dev is that place.
 
-- 🔍 **Search** by capability, not just name
-- 📦 **Publish** in one command
+- 🔍 **Discover** — browse all tools at [mcpm.dev/search](https://www.mcpm.dev/search)
+- 📦 **Publish** — `mcpm-dev publish` from your project directory
+- 🐙 **Import** — paste a GitHub repo URL on [mcpm.dev/publish](https://www.mcpm.dev/publish)
 - 👥 **GitHub OAuth** — no new account needed
-- 🔗 **Works with everything** — mcpm.sh, Claude, Cursor, any MCP client
-
-## Quick Start
-
-```bash
-# Publish your MCP tool
-npx mcpm-dev publish
-
-# Find tools for your agent
-npx mcpm-dev search weather
-```
-
-## How it fits
-
-```
-mcpm.dev (registry)  ←  You publish here
-       ↓
-  Any MCP client  →  mcpm.sh, Claude Desktop, Cursor, Windsurf
-```
-
-We're the registry layer. Other tools (like [mcpm.sh](https://mcpm.sh)) handle local server management. Together, the ecosystem works.
-
-## Structure
-
-```
-mcpm/
-├── web/          ← Next.js registry (mcpm.dev)
-├── cli/          ← CLI tool (mcpm-dev)
-└── docs/         ← Documentation
-```
+- 🔗 **CLI-first** — `mcpm-dev add <name>` copies straight to your clipboard
 
 ## Quick Start
 
 ```bash
 # Install CLI
-npm i -g mcpm-dev
+npm install -g mcpm-dev
 
-# Publish your MCP tool
-cd my-mcp-server
-mcpm-dev publish
+# Sign in
+mcpm-dev login
 
-# Install someone else's tool
-mcpm-dev add weather-mcp
+# Find tools
+mcpm-dev search weather
+
+# Install a tool
+mcpm-dev add timer-mcp
 ```
 
-## The Plan
+## Project Structure (for publishers)
 
-| Phase | What | Time |
-|---|---|---|
-| **Week 1** | Next.js site + GitHub OAuth + submit page | 7 days |
-| **Week 2** | CLI publish + search + deploy | 7 days |
-| **Month 2** | Ratings, analytics, semantic search | 30 days |
-| **Month 3+** | Enterprise, marketplace, monetize | ongoing |
+```
+my-mcp-server/
+├── package.json      ← name, version, entry point
+├── server.js         ← your MCP server code
+├── mcpm.json         ← client config (recommended)
+└── README.md         ← docs for your users
+```
+
+### mcpm.json
+
+Tells MCP clients how to run your server. Maps 1:1 to the `mcpServers` entry in client config files:
+
+```json
+{
+  "mcp": {
+    "transport": "stdio",
+    "command": "node",
+    "args": ["server.js"],
+    "env": {}
+  }
+}
+```
+
+Without `mcpm.json`, the registry falls back to `npx -y <package-name>`.
+
+## CLI Commands
+
+```bash
+mcpm-dev login          # Authenticate with mcpm.dev
+mcpm-dev publish        # Publish current directory as MCP tool
+mcpm-dev add <name>     # Install an MCP tool
+mcpm-dev search <query> # Search the registry
+mcpm-dev info <name>    # Show package details and README
+mcpm-dev whoami         # Show logged-in user
+mcpm-dev logout         # Sign out
+mcpm-dev token          # Print auth token
+```
+
+## Repo Structure
+
+```
+mcpm/
+├── web/               ← Next.js registry (mcpm.dev)
+├── cli/               ← CLI tool (mcpm-dev)
+├── templates/          ← Starter MCP server template
+│   ├── mcpm.json       ← Template for client config
+│   └── starter-mcp/    ← Minimal MCP server example
+└── docs/               ← (deprecated, docs live in web/content/docs/)
+```
