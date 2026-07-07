@@ -47,6 +47,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
   }
 
+  // Only admin can create tutorials
+  const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "xapable";
+  if (type === "tutorial" && user.username !== ADMIN_USERNAME) {
+    return NextResponse.json({ error: "Forbidden — only admin can create tutorials" }, { status: 403 });
+  }
+
   const postSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
   try {
