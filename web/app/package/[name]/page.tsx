@@ -4,6 +4,7 @@ import { formatNumber, timeAgo } from "@/lib/utils";
 import { getPackageData } from "@/lib/data";
 import { StarButton } from "@/components/StarButton";
 import { SetupButtons } from "./SetupButtons";
+import { InstallButtons } from "@/components/InstallButtons";
 
 interface PackagePageProps {
   params: { name: string };
@@ -98,6 +99,15 @@ export default async function PackagePage({ params }: PackagePageProps) {
           </div>
         </div>
         <StarButton packageName={pkg.name} />
+      </div>
+
+      {/* One-click install buttons */}
+      <div className="mt-6">
+        <InstallButtons
+          name={pkg.name}
+          command={(pkg.mcp as any)?.command || "npx"}
+          args={(pkg.mcp as any)?.args || ["-y", pkg.name]}
+        />
       </div>
 
       {/* One-click setup */}
