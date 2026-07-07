@@ -1,7 +1,7 @@
 import { getHomeData } from "@/lib/data";
 import { SearchBar } from "@/components/SearchBar";
 import { PackageCard } from "@/components/PackageCard";
-import { Package, Globe, Zap } from "lucide-react";
+import { Package, Globe, Zap, Terminal } from "lucide-react";
 
 export default function HomePage() {
   const featured = [

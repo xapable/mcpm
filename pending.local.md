@@ -21,12 +21,9 @@ Items that cannot be completed in development. Requires real infrastructure.
 - [ ] Copy Client ID + Secret to `.env.local`
 
 ### 4. Environment Variables (`.env.local`)
-```
-AUTH_GITHUB_ID=
-AUTH_GITHUB_SECRET=
-AUTH_SECRET=           # openssl rand -base64 32
-DATABASE_URL=postgresql://...
-```
+- [y] `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` from GitHub OAuth
+- [y] `AUTH_SECRET` generated via `openssl rand -base64 32`
+- [y] `DATABASE_URL` from Neon PostgreSQL
 
 ### 5. Email Provider (for notifications)
 - [ ] Sign up for Resend (resend.com)
