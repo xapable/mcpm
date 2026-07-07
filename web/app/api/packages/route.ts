@@ -4,7 +4,7 @@ import { eq, like, or } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { verifyCliToken } from "../cli-token/route";
+import { verifyCliToken } from "@/lib/cli-auth";
 
 // GET /api/packages?q=searchterm
 export async function GET(req: NextRequest) {
