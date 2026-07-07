@@ -17,7 +17,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
   const { posts, total, totalPages } = await getPaginatedPosts("blog", page, PER_PAGE);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
+    <div className="max-w-4xl mx-auto px-4 py-16">
       <h1 className="text-4xl font-bold mb-2">Blog</h1>
       <p className="text-slate-500 mb-10">
         News, updates, and announcements from mcpm. <span className="text-slate-300">({total} posts)</span>

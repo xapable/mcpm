@@ -24,7 +24,7 @@ export default async function BlogPostPage({ params }: Props) {
   const readingTime = Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200));
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
+    <div className="max-w-4xl mx-auto px-4 py-16">
       <Link href="/blog" className="text-sm text-blue-600 hover:underline mb-8 inline-block">
         ← Back to Blog
       </Link>
