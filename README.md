@@ -7,7 +7,7 @@ The registry and CLI for MCP tools. Like npm, for AI agents.
 ```
 mcpm/
 ├── web/          ← Next.js registry (mcpm.dev)
-├── cli/          ← CLI tool (npx mcpm publish)
+├── cli/          ← CLI tool (mcpm-cli)
 └── docs/         ← Documentation
 ```
 
@@ -15,7 +15,7 @@ mcpm/
 
 ```bash
 # Install CLI
-npm i -g mcpm
+npm i -g mcpm-cli
 
 # Publish your MCP tool
 cd my-mcp-server

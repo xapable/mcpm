@@ -25,7 +25,7 @@ my-mcp-server/
 
 Then:
 ```bash
-npm i -g mcpm
+npm i -g mcpm-cli
 mcpm login
 mcpm publish
 ```

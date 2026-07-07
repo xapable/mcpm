@@ -1,5 +1,5 @@
 {
-  "name": "mcpm",
+  "name": "mcpm-cli",
   "version": "0.1.0",
   "description": "MCP Package Manager — publish and install MCP tools",
   "main": "dist/index.js",
