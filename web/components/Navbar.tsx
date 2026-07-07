@@ -34,6 +34,14 @@ export function Navbar() {
           >
             Tutorials
           </Link>
+          <a
+            href="https://github.com/xapable/mcpm/discussions"
+            target="_blank"
+            rel="noopener"
+            className="rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            Community
+          </a>
 
           {session ? (
             <>
