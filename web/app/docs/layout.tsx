@@ -1,15 +1,36 @@
+"use client";
+
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Rocket, FileText, Code2 } from "lucide-react";
 import { getAllDocs } from "@/lib/docs";
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   const docs = getAllDocs();
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
+      {/* Mobile select */}
+      <div className="lg:hidden mb-6">
+        <select
+          value={pathname}
+          onChange={(e) => router.push(e.target.value)}
+          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm bg-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="/docs">Documentation</option>
+          {docs.map((doc) => (
+            <option key={doc.slug} value={`/docs/${doc.slug}`}>
+              {doc.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex gap-10">
-        {/* Sidebar */}
-        <aside className="block w-56 shrink-0">
+        {/* Sidebar - desktop */}
+        <aside className="hidden lg:block w-56 shrink-0">
           <div className="sticky top-24">
             <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Documentation</h4>
             <nav className="space-y-0.5">
