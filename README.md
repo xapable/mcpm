@@ -1,6 +1,37 @@
-# MCPM — MCP Package Manager
+# mcpm.dev — The MCP Registry
 
-The registry and CLI for MCP tools. Like npm, for AI agents.
+The central registry for MCP tools. Like npm, for AI agents.
+
+**Discover, publish, and share MCP servers.** Works with any MCP client (Claude Desktop, Cursor, Windsurf, mcpm.sh, etc.).
+
+## Why mcpm.dev
+
+MCP tools are scattered across GitHub repos. There's no central place to discover them. mcpm.dev is that place.
+
+- 🔍 **Search** by capability, not just name
+- 📦 **Publish** in one command
+- 👥 **GitHub OAuth** — no new account needed
+- 🔗 **Works with everything** — mcpm.sh, Claude, Cursor, any MCP client
+
+## Quick Start
+
+```bash
+# Publish your MCP tool
+npx mcpm-dev publish
+
+# Find tools for your agent
+npx mcpm-dev search weather
+```
+
+## How it fits
+
+```
+mcpm.dev (registry)  ←  You publish here
+       ↓
+  Any MCP client  →  mcpm.sh, Claude Desktop, Cursor, Windsurf
+```
+
+We're the registry layer. Other tools (like [mcpm.sh](https://mcpm.sh)) handle local server management. Together, the ecosystem works.
 
 ## Structure
 

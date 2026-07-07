@@ -76,6 +76,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Only the package owner can publish new versions" }, { status: 403 });
     }
     // Update package metadata
+    console.log("UPDATE mcp:", mcp, "existing:", existing[0].mcp);
     await db.update(packages)
       .set({ description: description || existing[0].description, mcp: mcp ?? existing[0].mcp, repoUrl: repoUrl || existing[0].repoUrl })
       .where(eq(packages.name, name));
