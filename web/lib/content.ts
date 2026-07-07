@@ -2,6 +2,39 @@ import { db } from "@/db";
 import { posts, users } from "@/db/schema";
 import { eq, ilike, or, sql, desc } from "drizzle-orm";
 import { marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import hljs from "highlight.js";
+
+// Configure marked with syntax highlighting
+marked.use(
+  markedHighlight({
+    langPrefix: "hljs language-",
+    highlight(code: string, lang: string) {
+      if (lang && hljs.getLanguage(lang)) {
+        return hljs.highlight(code, { language: lang }).value;
+      }
+      return code;
+    },
+  })
+);
+
+marked.setOptions({
+  gfm: true,
+  breaks: true,
+});
+
+// Strip hashtags from content body (they're stored in tags column)
+function stripHashtags(content: string): string {
+  return content
+    .split("\n")
+    .filter((line) => !/^\s*#\w+\s*$/.test(line.trim()))
+    .join("\n");
+}
+
+function renderMarkdown(content: string): string {
+  const cleaned = stripHashtags(content);
+  return marked.parse(cleaned, { async: false }) as string;
+}
 
 export interface PostMeta {
   slug: string;
@@ -43,7 +76,7 @@ async function rowToPost(row: typeof posts.$inferSelect): Promise<Post> {
   return {
     ...(await rowToMeta(row)),
     content: row.content || "",
-    html: marked.parse(row.content || "", { async: false }) as string,
+    html: renderMarkdown(row.content || ""),
   };
 }
 
