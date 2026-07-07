@@ -1,52 +1,19 @@
-import { Download, User, Clock, ExternalLink, Copy, Check } from "lucide-react";
+import { notFound } from "next/navigation";
+import { Download, User, Clock } from "lucide-react";
 import { formatNumber, timeAgo } from "@/lib/utils";
+import { getPackageData } from "@/lib/data";
 import { StarButton } from "@/components/StarButton";
 
 interface PackagePageProps {
   params: { name: string };
 }
 
-export default function PackagePage({ params }: PackagePageProps) {
-  const name = params.name;
+export default async function PackagePage({ params }: PackagePageProps) {
+  const pkg = await getPackageData(params.name);
 
-  // Mock data — replace with DB query
-  const pkg = {
-    name,
-    description: "Get real-time weather forecasts for any city worldwide. Supports current conditions, hourly forecasts, and 7-day outlooks.",
-    username: "anthropic",
-    avatar: null,
-    downloads: 12400,
-    createdAt: new Date("2025-06-15"),
-    version: "1.2.0",
-    repoUrl: "https://github.com/anthropic/weather-mcp",
-    readme: `# weather-mcp
-
-A Model Context Protocol server for weather data.
-
-## Installation
-
-\`\`\`bash
-mcpm add weather-mcp
-\`\`\`
-
-## Usage
-
-Add to your agent:
-
-\`\`\`typescript
-import { weatherMcp } from "weather-mcp";
-
-const agent = new Agent({
-  tools: [weatherMcp],
-});
-\`\`\`
-
-## Available Tools
-
-- **get_current_weather** — Get current conditions for a city
-- **get_forecast** — 7-day forecast with temps, humidity, wind
-- **get_alerts** — Severe weather alerts for a region`,
-  };
+  if (!pkg) {
+    notFound();
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">

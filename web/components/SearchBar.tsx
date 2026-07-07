@@ -51,7 +51,7 @@ export function SearchBar() {
     e.preventDefault();
     if (query.trim()) {
       setOpen(false);
-      router.push(`/?q=${encodeURIComponent(query.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
     }
   };
 

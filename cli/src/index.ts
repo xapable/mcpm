@@ -114,8 +114,16 @@ program
 program
   .command("add <name>")
   .description("Install an MCP tool")
-  .action((name: string) => {
+  .action(async (name: string) => {
     console.log(chalk.blue(`\n📥 Installing ${chalk.bold(name)}...\n`));
+
+    // Track install
+    fetch(`${REGISTRY_URL}/api/packages/${encodeURIComponent(name)}/download`, {
+      method: "POST",
+    }).catch(() => {
+      // Silently ignore — tracking is best-effort
+    });
+
     console.log(chalk.green(`✓ Added ${name} to your agent`));
     console.log(chalk.dim(`\n  import { ${toCamelCase(name)} } from "${name}";`));
   });
@@ -126,7 +134,7 @@ program
   .description("Search the registry")
   .action((query: string) => {
     console.log(chalk.blue(`\n🔍 Searching for "${query}"...\n`));
-    console.log(chalk.dim("Visit ") + chalk.cyan(`${REGISTRY_URL}/?q=${encodeURIComponent(query)}`));
+    console.log(chalk.dim("Visit ") + chalk.cyan(`${REGISTRY_URL}/search?q=${encodeURIComponent(query)}`));
   });
 
 program.parse();

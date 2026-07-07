@@ -1,31 +1,17 @@
 import { getHomeData } from "@/lib/data";
+import { formatNumber } from "@/lib/utils";
 import { SearchBar } from "@/components/SearchBar";
 import { PackageCard } from "@/components/PackageCard";
 import { Package, Globe, Zap, Terminal } from "lucide-react";
 
-export default function HomePage() {
-  const featured = [
-    {
-      name: "weather-mcp",
-      description: "Get real-time weather forecasts for any city worldwide.",
-      username: "anthropic",
-      downloads: 12400,
-      createdAt: new Date("2025-06-15"),
-    },
-    {
-      name: "github-mcp",
-      description: "Full GitHub API access: repos, issues, PRs, and code search.",
-      username: "github",
-      downloads: 8900,
-      createdAt: new Date("2025-05-20"),
-    },
-    {
-      name: "stripe-mcp",
-      description: "Process payments, manage subscriptions, create invoices.",
-      username: "stripe",
-      downloads: 6200,
-      createdAt: new Date("2025-06-01"),
-    },
+export default async function HomePage() {
+  const { stats, featured } = await getHomeData();
+
+  const statsDisplay = [
+    { value: formatNumber(stats.totalPackages), label: "Tools" },
+    { value: formatNumber(stats.weeklyInstalls), label: "Weekly Installs" },
+    { value: formatNumber(stats.totalUsers), label: "Publishers" },
+    { value: formatNumber(stats.agentsBuilt), label: "Agents Built" },
   ];
 
   return (
@@ -55,12 +41,7 @@ export default function HomePage() {
       {/* Stats */}
       <section className="border-b border-slate-200 px-4 py-12">
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 text-center md:grid-cols-4">
-          {[
-            { value: "120+", label: "Tools" },
-            { value: "45K", label: "Weekly Installs" },
-            { value: "380+", label: "Publishers" },
-            { value: "12K", label: "Agents Built" },
-          ].map((stat) => (
+          {statsDisplay.map((stat) => (
             <div key={stat.label}>
               <p className="text-3xl font-bold text-slate-900">{stat.value}</p>
               <p className="mt-1 text-sm text-slate-500">{stat.label}</p>
@@ -73,11 +54,25 @@ export default function HomePage() {
       <section className="px-4 py-16">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-2xl font-bold text-slate-900">Featured tools</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featured.map((pkg) => (
-              <PackageCard key={pkg.name} {...pkg} />
-            ))}
-          </div>
+          {featured.length > 0 ? (
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {featured.map((pkg) => (
+                <PackageCard key={pkg.name} {...pkg} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-8 rounded-xl border border-dashed border-slate-300 bg-slate-50 py-16 text-center">
+              <Package className="mx-auto h-10 w-10 text-slate-300" />
+              <p className="mt-4 text-slate-500">No packages published yet.</p>
+              <p className="mt-1 text-sm text-slate-400">
+                Be the first to{" "}
+                <a href="/publish" className="text-blue-600 hover:underline">
+                  publish an MCP tool
+                </a>
+                .
+              </p>
+            </div>
+          )}
         </div>
       </section>
 

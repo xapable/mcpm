@@ -13,47 +13,47 @@ Items that cannot be completed in development. Requires real infrastructure.
 ### 2. Database
 - [y] Create Neon PostgreSQL database
 - [y] Copy connection string to `.env.local`
-- [ ] Run `npx drizzle-kit push`
+- [x] Run `npx drizzle-kit push`
 
 ### 3. GitHub OAuth App
-- [ ] Create OAuth app at https://github.com/settings/developers
-- [ ] Callback URL: `https://mcpm.dev/api/auth/callback/github`
-- [ ] Copy Client ID + Secret to `.env.local`
+- [x] Create OAuth app at https://github.com/settings/developers
+- [x] Callback URL: `https://mcpm.dev/api/auth/callback/github`
+- [x] Copy Client ID + Secret to `.env.local`
 
 ### 4. Environment Variables (`.env.local`)
-- [y] `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` from GitHub OAuth
-- [y] `AUTH_SECRET` generated via `openssl rand -base64 32`
-- [y] `DATABASE_URL` from Neon PostgreSQL
+- [x] `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` from GitHub OAuth
+- [x] `AUTH_SECRET` generated via `openssl rand -base64 32`
+- [x] `DATABASE_URL` from Neon PostgreSQL
 
 ### 5. Email Provider (for notifications)
-- [ ] Sign up for Resend (resend.com)
-- [ ] Add `RESEND_API_KEY` to env
-- [ ] Uncomment production code in `lib/email.ts`
+- [x] Sign up for Resend (resend.com)
+- [x] Add `RESEND_API_KEY` to env
+- [x] Uncomment production code in `lib/email.ts`
 
 ### 6. Deploy
-- [ ] Push to GitHub
-- [ ] Import to Vercel → deploy
-- [ ] Set all env vars in Vercel dashboard
+- [x] Push to GitHub
+- [x] Import to Vercel → deploy
+- [x] Set all env vars in Vercel dashboard
 
 ---
 
 ## 🟡 Post-Launch (Week 1-2)
 
 ### Homepage — switch to real DB data
-- [ ] Replace mock `featured` array in `app/page.tsx` with `getHomeData()` from `lib/data.ts`
-- [ ] Replace mock `stats` with real DB queries
+- [x] Replace mock `featured` array in `app/page.tsx` with `getHomeData()` from `lib/data.ts`
+- [x] Replace mock `stats` with real DB queries
 
 ### Package page — switch to real DB data
-- [ ] Replace mock `pkg` object in `app/package/[name]/page.tsx` with `getPackageData()`
+- [x] Replace mock `pkg` object in `app/package/[name]/page.tsx` with `getPackageData()`
 
 ### Dashboard — switch to real DB data
-- [ ] Replace client component with server component using `getUserPackages()`
+- [x] Replace client component with server component using `getUserPackages()`
 
 ### CLI — install tracking
-- [ ] `mcpm add <name>` should call `POST /api/packages/:name/download` to increment counter
+- [x] `mcpm add <name>` should call `POST /api/packages/:name/download` to increment counter
 
 ### Search page
-- [ ] Create `app/search/page.tsx` for `/search?q=...` results page
+- [x] Create `app/search/page.tsx` for `/search?q=...` results page
 
 ### Weekly digest
 - [ ] Cron job (Vercel Cron) to send weekly top packages email to opted-in users
