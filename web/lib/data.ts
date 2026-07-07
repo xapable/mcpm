@@ -28,33 +28,48 @@ export async function getHomeData() {
 }
 
 export async function getPackageData(name: string) {
-  const pkg = await db.query.packages.findFirst({
-    where: (p, { eq }) => eq(p.name, name),
-    with: {
-      versions: { orderBy: (v: typeof versions.$inferSelect, { desc }) => [desc(v.createdAt)] },
-    },
-  });
+  const rows = await db
+    .select({
+      name: pkgTable.name,
+      description: pkgTable.description,
+      repoUrl: pkgTable.repoUrl,
+      downloads: pkgTable.downloads,
+      createdAt: pkgTable.createdAt,
+      userId: pkgTable.userId,
+      username: users.username,
+      avatar: users.avatar,
+      version: versions.version,
+      readme: versions.readme,
+      versionCreatedAt: versions.createdAt,
+    })
+    .from(pkgTable)
+    .leftJoin(users, eq(pkgTable.userId, users.id))
+    .leftJoin(versions, eq(pkgTable.id, versions.packageId))
+    .where(eq(pkgTable.name, name))
+    .orderBy(sql`${versions.createdAt} DESC NULLS LAST`)
+    .limit(1);
 
-  if (!pkg) return null;
+  if (rows.length === 0) return null;
 
-  const user = await db.query.users.findFirst({
-    where: (u, { eq }) => eq(u.id, pkg.userId),
-  });
+  const pkg = rows[0];
+  const allVersions = await db
+    .select({ version: versions.version, createdAt: versions.createdAt })
+    .from(versions)
+    .innerJoin(pkgTable, eq(versions.packageId, pkgTable.id))
+    .where(eq(pkgTable.name, name))
+    .orderBy(sql`${versions.createdAt} DESC`);
 
   return {
     name: pkg.name,
-    description: pkg.description,
+    description: pkg.description ?? "",
     repoUrl: pkg.repoUrl,
-    downloads: pkg.downloads,
-    createdAt: pkg.createdAt,
-    username: user?.username || "unknown",
-    avatar: user?.avatar,
-    version: pkg.versions[0]?.version || "0.1.0",
-    readme: pkg.versions[0]?.readme || "",
-    versions: pkg.versions.map((v) => ({
-      version: v.version,
-      createdAt: v.createdAt,
-    })),
+    downloads: pkg.downloads ?? 0,
+    createdAt: pkg.createdAt ?? new Date(),
+    username: pkg.username ?? "unknown",
+    avatar: pkg.avatar,
+    version: pkg.version ?? "0.1.0",
+    readme: pkg.readme ?? "",
+    versions: allVersions,
   };
 }
 
