@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { packages, users, versions } from "@/db/schema";
-import { eq, like, or } from "drizzle-orm";
+import { eq, like, or, desc } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -75,6 +75,10 @@ export async function POST(req: NextRequest) {
     if (existing[0].userId !== userId) {
       return NextResponse.json({ error: "Only the package owner can publish new versions" }, { status: 403 });
     }
+    // Update package metadata
+    await db.update(packages)
+      .set({ description: description || existing[0].description, mcp: mcp || existing[0].mcp, repoUrl: repoUrl || existing[0].repoUrl })
+      .where(eq(packages.name, name));
     // Add new version to existing package
     await db.insert(versions).values({
       packageId: existing[0].id,
