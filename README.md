@@ -19,10 +19,10 @@ npm i -g mcpm-cli
 
 # Publish your MCP tool
 cd my-mcp-server
-mcpm publish
+mcpm-cli publish
 
 # Install someone else's tool
-mcpm add weather-mcp
+mcpm-cli add weather-mcp
 ```
 
 ## The Plan

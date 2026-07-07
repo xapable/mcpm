@@ -13,7 +13,7 @@ const REGISTRY_URL = process.env.MCPM_REGISTRY || "https://mcpm.dev";
 const program = new Command();
 
 program
-  .name("mcpm")
+  .name("mcpm-cli")
   .description("MCP Package Manager — publish and install MCP tools")
   .version("0.1.0");
 
@@ -62,7 +62,7 @@ program
     }
   });
 
-// mcpm publish
+// mcpm-cli publish
 program
   .command("publish")
   .description("Publish current directory as an MCP tool")
@@ -110,7 +110,7 @@ program
     }
   });
 
-// mcpm add <name>
+// mcpm-cli add <name>
 program
   .command("add <name>")
   .description("Install an MCP tool")

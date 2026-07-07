@@ -32,7 +32,7 @@ export default async function HomePage() {
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-400">
             <Terminal className="h-4 w-4" />
             <code className="rounded bg-slate-100 px-2 py-0.5 font-mono text-slate-600">
-              npx mcpm-cli add weather-mcp
+              mcpm-cli add weather-mcp
             </code>
           </div>
         </div>

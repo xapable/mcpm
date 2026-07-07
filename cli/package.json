@@ -4,7 +4,7 @@
   "description": "MCP Package Manager — publish and install MCP tools",
   "main": "dist/index.js",
   "bin": {
-    "mcpm": "./dist/index.js"
+    "mcpm-cli": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",

@@ -50,7 +50,7 @@ Items that cannot be completed in development. Requires real infrastructure.
 - [x] Replace client component with server component using `getUserPackages()`
 
 ### CLI — install tracking
-- [x] `mcpm add <name>` should call `POST /api/packages/:name/download` to increment counter
+- [x] `mcpm-cli add <name>` should call `POST /api/packages/:name/download` to increment counter
 
 ### Search page
 - [x] Create `app/search/page.tsx` for `/search?q=...` results page
